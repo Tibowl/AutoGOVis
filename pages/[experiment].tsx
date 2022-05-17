@@ -50,7 +50,7 @@ export default function Experiment({ location, meta, data }: Props & { location:
         </h1>
 
         <h3 className="text-lg font-bold pt-1" id="template">Template</h3>
-        <p>The template with assumptions for this experiment can be found on <FormattedLink href={`https://github.com/Tibowl/AutoGO/blob/master/templates/${meta.template}.json`}>GitHub</FormattedLink>.</p>
+        <p>The template with assumptions for this experiment can be found on <FormattedLink href={`https://github.com/Tibowl/AutoGO/blob/master/templates/${meta.template}.json`} target="github">GitHub</FormattedLink>.</p>
 
         <h3 className="text-lg font-bold pt-1" id="results">Results</h3>
         <div className="w-full bg-slate-800 rounded-xl p-1 my-2 md:my-0 text-white col-start-2">
