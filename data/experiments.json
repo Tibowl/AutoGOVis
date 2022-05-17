@@ -9,6 +9,14 @@
     "oneShot": false
   },
   {
+    "name": "Xiangling Pyronado DMG vs. ER",
+    "id": "xiangling-pyronado-er",
+    "template": "xiangling-pyronado-the-catch-er",
+    "y": "Pyronado DMG (Vape)",
+    "x": "Energy Recharge",
+    "oneShot": false
+  },
+  {
     "name": "HuTao CA, Dragon's Bane (SR only)",
     "id": "hutao-ca-dbane-sronly",
     "template": "hutao-ca-dbane-sronly",
