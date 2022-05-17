@@ -32,9 +32,9 @@ export default function Experiment({ location, meta, data }: Props & { location:
     return (
         <Main>
         <Head>
-            <title>{meta.name} | Wicked</title>
+            <title>{meta.name} | The GUOBA Project</title>
             <meta name="twitter:card" content="summary" />
-            <meta property="og:title" content={`${meta.name} | Wicked`} />
+            <meta property="og:title" content={`${meta.name} | The GUOBA Project`} />
             <meta property="og:description" content={desc} />
             <meta name="description" content={desc} />
         </Head>
@@ -49,6 +49,9 @@ export default function Experiment({ location, meta, data }: Props & { location:
             Experiment: {meta.name}
         </h1>
 
+        <h3 className="text-lg font-bold pt-1" id="template">Template</h3>
+        <p>The template with assumptions for this experiment can be found on <FormattedLink href={`https://github.com/Tibowl/AutoGO/blob/master/templates/${meta.template}.json`}>GitHub</FormattedLink>.</p>
+
         <h3 className="text-lg font-bold pt-1" id="results">Results</h3>
         <div className="w-full bg-slate-800 rounded-xl p-1 my-2 md:my-0 text-white col-start-2">
           <Scatter data={({
@@ -61,18 +64,28 @@ export default function Experiment({ location, meta, data }: Props & { location:
               color: "white",
               backgroundColor: "#333333",
               interaction: {
-                mode: "index",
+                mode: "point",
                 intersect: false
               },
               scales: {
                 yAxes: {
                   ticks: {
                       color: "white"
+                  },
+                  title: {
+                      display: true,
+                      color: "rgb(160,160,160)",
+                      text: meta.y
                   }
                 },
                 xAxes: {
                   ticks: {
                       color: "white"
+                  },
+                  title: {
+                      display: true,
+                      color: "rgb(160,160,160)",
+                      text: meta.oneShot ? "Total Adventure XP" : meta.x
                   }
                 }
               },
@@ -85,6 +98,12 @@ export default function Experiment({ location, meta, data }: Props & { location:
               }
             })} />
         </div>
+
+        <h3 className="text-lg font-bold pt-1" id="disclaimer">Disclaimer</h3>
+        <p>This data is gathered from the GUOBA project. Submit your own data <FormattedLink
+            href="https://forms.gle/Gv8rd5XEjH3GzhE36"
+            target="form">here</FormattedLink>. Please refer to the <FormattedLink href="/">homepage</FormattedLink> for more information.
+        </p>
         </Main>
     )
 }
@@ -96,13 +115,16 @@ function getColor(data: ExperimentData) {
       pillarIndex = 1
       break
     case "KQM Leaks":
-      pillarIndex = 2
+      pillarIndex = 6
+      break
+    case "KQM Guhua":
+      pillarIndex = 5
       break
   }
 
-  const a = (Math.random() - 0.5) * 0.5
-  const b = (Math.random() - 0.5) * 0.5
-  const c = 1 + (Math.random() - 0.5) * 0.2
+  const a = (Math.random() - 0.5) * 0.6
+  const b = (Math.random() - 0.5) * 0.4
+  const c = (Math.random() - 0.5) * 15
 
   return {
     backgroundColor: getColorIndex(pillarIndex, a, b, c, 0.4),
@@ -111,15 +133,15 @@ function getColor(data: ExperimentData) {
 }
 
 const colors = [
-  Color({ r: 201, g: 201, b: 201 }),
-  Color({ r: 255, g: 99, b: 99 }),
-  Color({ r: 255, g: 216, b: 99 }),
-  Color({ r: 177, g: 255, b: 99 }),
-  Color({ r: 99, g: 255, b: 138 }),
-  Color({ r: 99, g: 255, b: 255 }),
-  Color({ r: 99, g: 138, b: 255 }),
-  Color({ r: 177, g: 99, b: 255 }),
-  Color({ r: 255, g: 99, b: 216 }),
+  Color({ r: 201, g: 201, b: 201 }), // 0 gray: unknown
+  Color({ r: 255, g: 99, b: 99 }),   // 1 redish: kqm tc
+  Color({ r: 255, g: 216, b: 99 }),  // 2 yellow: ??
+  Color({ r: 177, g: 255, b: 99 }),  // 3 green1: ??
+  Color({ r: 99, g: 255, b: 138 }),  // 4 green2: ??
+  Color({ r: 99, g: 255, b: 255 }),  // 5 light blue: kqm guhua
+  Color({ r: 99, g: 138, b: 255 }),  // 6 dark blue: kqm leaks
+  Color({ r: 177, g: 99, b: 255 }),  // 7 purple: ??
+  Color({ r: 255, g: 99, b: 216 }),  // 8 pink: ??
 ]
 
 function getColorIndex(index: number, randomness1: number, randomness2: number, randomness3: number, alpha: number) {
@@ -127,8 +149,9 @@ function getColorIndex(index: number, randomness1: number, randomness2: number, 
 
   return base
     .lighten(randomness1)
-    .saturate(randomness2)
-    .hue(base.hue() * randomness3)
+    .desaturate(randomness2)
+    .hue(base.hue() + randomness3)
+    .alpha(alpha)
     .toString()
 }
 

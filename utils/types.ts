@@ -3,6 +3,8 @@ export interface ExperimentMeta {
   id: string
   template: string
   oneShot: boolean
+  x?: string
+  y?: string
 }
 
 export interface ExperimentData {

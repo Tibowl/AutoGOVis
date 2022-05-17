@@ -5,11 +5,9 @@ import Footer from "../components/Footer"
 import "../public/global.css"
 
 export default function MyApp({ Component, pageProps, router }: AppProps) {
-
-
   return <div className="bg-slate-50 dark:bg-slate-700 min-h-screen flex flex-col items-center justify-between text-slate-900 dark:text-slate-100">
     <Head>
-      <title>{router.pathname.substring(1).replace(/^\w/, w => w.toUpperCase())} | Wicked</title>
+      <title>{router.pathname.substring(1).replace(/^\w/, w => w.toUpperCase())} | The GUOBA Project</title>
       <link rel="icon" href="/favicon.ico" />
       <meta httpEquiv="content-language" content="en-us"></meta>
     </Head>

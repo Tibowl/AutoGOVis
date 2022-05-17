@@ -1,1 +1,2 @@
-# Wicked
+# The GUOBA Project
+:wicked:

@@ -5,7 +5,7 @@ import Main from "../components/Main"
 export default function Custom404() {
     return <Main>
         <Head>
-            <title>Page Not Found | Wicked</title>
+            <title>Page Not Found | The GUOBA Project</title>
         </Head>
         <h1 className="text-6xl">404 - Page Not Found</h1>
         <FormattedLink href="/" location="/404">Home</FormattedLink>

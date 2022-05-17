@@ -5,7 +5,7 @@ import Main from "../components/Main"
 export default function Custom500() {
     return <Main>
         <Head>
-            <title>A Server Error occurred | Wicked</title>
+            <title>A Server Error occurred | The GUOBA Project</title>
         </Head>
         <h1 className="text-6xl">500 - A Server Error occurred</h1>
         <FormattedLink href="/" location="/500">Home</FormattedLink>
