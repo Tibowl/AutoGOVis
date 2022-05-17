@@ -9,6 +9,7 @@ import FormattedLink from "../components/FormattedLink"
 import Main from "../components/Main"
 import { ExperimentData, ExperimentMeta } from "../utils/types"
 import Color from "color"
+import { useState } from "react"
 
 ChartJS.register(
   LinearScale,
@@ -29,6 +30,8 @@ interface Props {
 
 export default function Experiment({ location, meta, data }: Props & { location: string }) {
     const desc = `Visualization for the ${meta.name} experiment for the GUOBA project. The GUOBA Project intends to map out how the artifacts of players perform to improve mathematical models/artifact standards for calculations such as the KQMC.`
+    const [showLines, setShowLines] = useState(false)
+
     const datasets = meta.kqmc ? [{
       label: "KQMC",
       borderColor: "#6F3995",
@@ -40,7 +43,7 @@ export default function Experiment({ location, meta, data }: Props & { location:
     datasets.push(...data.map(d => ({
       label: d.nickname,
       data: meta.oneShot ? [{ x: d.ar, y: Math.max(...d.stats.map(([_x, y]) => y)) }] : d.stats.map(([x, y]) => ({ x, y })),
-      showLine: false,
+      showLine: showLines,
       ...getColor(d)
     })))
 
@@ -68,9 +71,10 @@ export default function Experiment({ location, meta, data }: Props & { location:
         <p>The template with assumptions for this experiment can be found on <FormattedLink href={`https://github.com/Tibowl/AutoGO/blob/master/templates/${meta.template}.json`} target="github">GitHub</FormattedLink>.</p>
 
         <h3 className="text-lg font-bold pt-1" id="results">Results</h3>
+        <CheckboxInput label="Show lines" set={setShowLines} value={showLines} />
         <div className="w-full bg-slate-800 rounded-xl p-1 my-2 md:my-0 text-white col-start-2">
           <Scatter data={({
-              datasets
+              datasets: datasets.map(x => ({ ...x, stepped: "after" }))
             })} options={({
               color: "white",
               backgroundColor: "#333333",
@@ -118,6 +122,19 @@ export default function Experiment({ location, meta, data }: Props & { location:
         </Main>
     )
 }
+
+function CheckboxInput({ value, set, label }: { value: boolean, set: (newValue: boolean) => unknown, label: string }) {
+  return <div><label>
+    {label}
+    <input
+      className="bg-slate-200 dark:bg-slate-800 rounded-lg px-2 ml-2 mt-1 focus:ring-indigo-500 focus:border-indigo-500"
+      checked={value}
+      onChange={(e) => set(e.target.checked)}
+      type="checkbox"
+    />
+  </label></div>
+}
+
 
 function getColor(data: ExperimentData) {
   let pillarIndex = 0
