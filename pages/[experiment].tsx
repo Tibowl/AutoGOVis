@@ -87,6 +87,9 @@ export default function Experiment({ location, meta, data }: Props & { location:
                   ticks: {
                       color: "white"
                   },
+                  grid: {
+                    color: "rgb(52,71,102)"
+                  },
                   title: {
                       display: true,
                       color: "rgb(160,160,160)",
@@ -96,6 +99,9 @@ export default function Experiment({ location, meta, data }: Props & { location:
                 xAxes: {
                   ticks: {
                       color: "white"
+                  },
+                  grid: {
+                    color: "rgb(52,71,102)"
                   },
                   title: {
                       display: true,
@@ -155,8 +161,9 @@ function getColor(data: ExperimentData) {
   const c = (Math.random() - 0.5) * 15
 
   return {
-    backgroundColor: getColorIndex(pillarIndex, a, b, c, 0.4),
-    borderColor: getColorIndex(pillarIndex, a, b, c, 1)
+    backgroundColor: getColorIndex(pillarIndex, a, b, c, 0.6),
+    borderColor: getColorIndex(pillarIndex, a, b, c, 1),
+    segment: { borderColor: getColorIndex(pillarIndex, a, b, c, .25) }
   }
 }
 
