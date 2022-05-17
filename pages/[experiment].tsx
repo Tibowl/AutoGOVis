@@ -28,7 +28,7 @@ interface Props {
 
 
 export default function Experiment({ location, meta, data }: Props & { location: string }) {
-    const desc = `${meta.name} experiment data.`
+    const desc = `Visualization for the ${meta.name} experiment for the GUOBA project. The GUOBA Project intends to map out how the artifacts of players perform to improve mathematical models/artifact standards for calculations such as the KQMC.`
     const datasets = meta.kqmc ? [{
       label: "KQMC",
       borderColor: "#6F3995",

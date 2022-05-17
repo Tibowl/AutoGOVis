@@ -10,7 +10,7 @@ interface Props {
 }
 
 export default function MainPage({ location, experiments }: Props & { location: string }) {
-  const desc = "The GUOBA Project."
+  const desc = "The GUOBA Project intends to map out how the artifacts of players perform to improve mathematical models/artifact standards for calculations such as the KQMC."
   return (
     <Main>
     <Head>
