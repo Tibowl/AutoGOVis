@@ -36,4 +36,5 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 
-data/
+data/output/
+data/users.json

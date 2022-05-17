@@ -1,0 +1,53 @@
+[
+  {
+    "name": "Kazuha EM vs. ER",
+    "id": "kazuha-er-em",
+    "template": "kazuha-er-em",
+    "y": "Elemental Mastery",
+    "x": "Energy Recharge",
+    "kqmc": [[166.12, 960.12], [206.9, 812.76]],
+    "oneShot": false
+  },
+  {
+    "name": "HuTao CA, Dragon's Bane (SR only)",
+    "id": "hutao-ca-dbane-sronly",
+    "template": "hutao-ca-dbane-sronly",
+    "y": "Charged Attack DMG",
+    "oneShot": true
+  },
+  {
+    "name": "HuTao CA, Deathmatch (SR only)",
+    "id": "hutao-ca-dm-sronly",
+    "template": "hutao-ca-dm-sronly",
+    "y": "Charged Attack DMG",
+    "oneShot": true
+  },
+  {
+    "name": "HuTao CA, Staff of Homa (SR only)",
+    "id": "hutao-ca-homa-sronly",
+    "template": "hutao-ca-homa-sronly",
+    "y": "Charged Attack DMG",
+    "oneShot": true
+  },
+  {
+    "name": "HuTao CA, Dragon's Bane (All)",
+    "id": "hutao-ca-dbane-all",
+    "template": "hutao-ca-dbane-all",
+    "y": "Charged Attack DMG",
+    "oneShot": true
+  },
+  {
+    "name": "HuTao CA, Deathmatch (All)",
+    "id": "hutao-ca-dm-all",
+    "template": "hutao-ca-dm-all",
+    "y": "Charged Attack DMG",
+    "oneShot": true
+  },
+  {
+    "name": "HuTao CA, Staff of Homa (All)",
+    "id": "hutao-ca-homa-all",
+    "template": "hutao-ca-homa-all",
+    "y": "Charged Attack DMG",
+    "oneShot": true
+  }
+]

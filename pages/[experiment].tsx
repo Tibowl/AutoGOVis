@@ -29,6 +29,21 @@ interface Props {
 
 export default function Experiment({ location, meta, data }: Props & { location: string }) {
     const desc = `${meta.name} experiment data.`
+    const datasets = meta.kqmc ? [{
+      label: "KQMC",
+      borderColor: "#6F3995",
+      backgroundColor: "#A474C5",
+      showLine: true,
+      data: meta.kqmc.map(([x, y]) => ({ x, y }))
+    }] : []
+
+    datasets.push(...data.map(d => ({
+      label: d.nickname,
+      data: meta.oneShot ? [{ x: d.ar, y: Math.max(...d.stats.map(([_x, y]) => y)) }] : d.stats.map(([x, y]) => ({ x, y })),
+      showLine: false,
+      ...getColor(d)
+    })))
+
     return (
         <Main>
         <Head>
@@ -40,9 +55,9 @@ export default function Experiment({ location, meta, data }: Props & { location:
         </Head>
 
         <h2 className="font-semibold">
-            <FormattedLink href="/" location={location} className="font-semibold text-lg">
+          <FormattedLink href="/#experiments" location={location} className="font-semibold text-lg">
             Experiments
-            </FormattedLink>
+          </FormattedLink>
         </h2>
 
         <h1 className="text-3xl font-bold pb-2">
@@ -55,11 +70,7 @@ export default function Experiment({ location, meta, data }: Props & { location:
         <h3 className="text-lg font-bold pt-1" id="results">Results</h3>
         <div className="w-full bg-slate-800 rounded-xl p-1 my-2 md:my-0 text-white col-start-2">
           <Scatter data={({
-              datasets: data.map(d => ({
-                label: d.nickname,
-                data: meta.oneShot ? [{ x: d.ar, y: Math.max(...d.stats.map(([_x, y]) => y)) }] : d.stats.map(([x, y]) => ({ x, y })),
-                ...getColor(d)
-              }))
+              datasets
             })} options={({
               color: "white",
               backgroundColor: "#333333",
