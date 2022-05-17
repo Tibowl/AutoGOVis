@@ -72,24 +72,27 @@
     "oneShot": true
   },
   {
-    "name": "Ganyu Ice Shards, Amos' Bow",
+    "name": "Ganyu Ice Shards vs. ER, Amos' Bow",
     "id": "ganyu-ice-shard-amos-bow",
     "template": "ganyu-ice-shard-amos",
     "y": "Ice Shard DMG",
-    "oneShot": true
+    "x": "Energy Recharge",
+    "oneShot": false
   },
   {
-    "name": "Ganyu Ice Shards, Prototype Crescent",
+    "name": "Ganyu Ice Shards vs. ER, Prototype Crescent",
     "id": "ganyu-ice-shard-prototype-crescent",
     "template": "ganyu-ice-shard-prototype-crescent",
     "y": "Ice Shard DMG",
-    "oneShot": true
+    "x": "Energy Recharge",
+    "oneShot": false
   },
   {
-    "name": "Ganyu Ice Shards, Skyward Harp",
+    "name": "Ganyu Ice Shards vs. ER, Skyward Harp",
     "id": "ganyu-ice-shard-skyward-harp",
     "template": "ganyu-ice-shard-skyward-harp",
     "y": "Ice Shard DMG",
-    "oneShot": true
+    "x": "Energy Recharge",
+    "oneShot": false
   }
 ]
