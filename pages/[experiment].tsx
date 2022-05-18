@@ -32,7 +32,7 @@ interface Props {
 
 const UNSELECTED = "Select..."
 export default function Experiment({ location, meta, data, next, prev }: Props & { location: string }) {
-    const desc = `Visualization for the ${meta.name} experiment for the GUOBA project. The GUOBA Project intends to map out how the artifacts of players perform to improve mathematical models/artifact standards for calculations such as the KQMC.`
+    const desc = `Visualization for the ${meta.name} experiment for the GUOBA project. The GUOBA Project intends to map out how the artifacts of players perform to improve mathematical models/artifact standards for calculations such as the KQMS.`
 
     const [showLines, setShowLines] = useState(false)
     const [randomColors, setRandomColors] = useState(true)
@@ -80,7 +80,7 @@ export default function Experiment({ location, meta, data, next, prev }: Props &
         <CheckboxInput label="Randomize Colors" set={setRandomColors} value={randomColors} />
         <SelectInput label="Focused User" set={setMarkedUser} value={markedUser} options={[
           UNSELECTED,
-          ...(meta.kqmc ? ["KQMC"] : []),
+          ...(meta.kqms ? ["KQMS"] : []),
           ...data.map(x => x.nickname).sort()
         ]} />
         <UserGraph data={data} showLines={showLines} meta={meta} randomColors={randomColors} markedUser={markedUser} />
@@ -97,12 +97,12 @@ export default function Experiment({ location, meta, data, next, prev }: Props &
 }
 
 function UserGraph({ meta, data, showLines, randomColors, markedUser }: { meta: ExperimentMeta, data: ExperimentData[], showLines: boolean, randomColors: boolean, markedUser: string }) {
-  const datasets = meta.kqmc ? [{
-    label: "KQMC",
+  const datasets = meta.kqms ? [{
+    label: "KQMS",
     borderColor: "#6F3995",
     backgroundColor: "#A474C5",
     showLine: true,
-    data: meta.kqmc.map(([x, y]) => ({ x, y }))
+    data: meta.kqms.map(([x, y]) => ({ x, y }))
   }] : []
 
   datasets.push(...data.map(d => ({
