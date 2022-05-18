@@ -303,7 +303,7 @@ function getColor(data: ExperimentData, randomColors: boolean, markedUser: strin
   }
 
   if (data.nickname == "Artesians#0002") {
-    base = Color("#423B17")
+    base = Color("#423B17").lighten(.4)
     randomColors = false
   }
 
@@ -313,11 +313,12 @@ function getColor(data: ExperimentData, randomColors: boolean, markedUser: strin
   const b = randomColors ? (Math.random() - 0.5) * 0.4 : 0
   const c = randomColors ? (Math.random() - 0.5) * 15  : 0
 
-  const mult = markedUser == UNSELECTED ? .5 : data.nickname == markedUser ? 2 : .2
+  const mult = markedUser == UNSELECTED ? .5 : (data.nickname == markedUser || (markedUser == "Specials" && data.ar < 0)) ? 2 : .2
 
   return {
     backgroundColor: getColorIndex(base, a, b, c, 0.6 * mult),
     borderColor: getColorIndex(base, a, b, c, 1.2 * mult),
+    borderWidth: data.nickname == markedUser ? 5 : undefined,
     segment: { borderColor: getColorIndex(base, a, b, c, .25 * mult) }
   }
 }
