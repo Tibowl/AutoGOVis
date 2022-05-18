@@ -13,6 +13,14 @@
     "oneShot": false
   },
   {
+    "name": "Rosaria Burst (Melt), Wavebreaker",
+    "id": "rosaria-burst-melt-wavebreaker",
+    "template": "rosaria-burst-melt-wavebreaker",
+    "y": "Ice Lance DoT (Melt)",
+    "x": "Energy Recharge",
+    "oneShot": false
+  },
+  {
     "name": "Keqing CA, Mistsplitter",
     "id": "keqing-ca-mistsplitter",
     "template": "keqing-ca-mistsplitter",
@@ -20,7 +28,7 @@
     "oneShot": true
   },
   {
-    "name": "Xingqiu Burst DMG, Sacrificial Sword",
+    "name": "Xingqiu Burst, Sacrificial Sword",
     "id": "xingqiu-burst-sacsword",
     "template": "xingqiu-burst-sacsword",
     "y": "Sword Rain DMG",
