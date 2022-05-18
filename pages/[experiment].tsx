@@ -1,15 +1,16 @@
 import {
-  BarElement, CategoryScale, Chart as ChartJS, Filler, Legend, LinearScale, LineElement, PointElement, Tooltip
+    BarElement, CategoryScale, Chart as ChartJS, Filler, Legend, LinearScale, LineElement, PointElement, Tooltip
 } from "chart.js"
+import Color from "color"
 import { readFile } from "fs/promises"
 import { GetStaticPathsResult, GetStaticPropsContext, GetStaticPropsResult } from "next"
 import Head from "next/head"
+import { useState } from "react"
 import { Scatter } from "react-chartjs-2"
 import FormattedLink from "../components/FormattedLink"
 import Main from "../components/Main"
 import { ExperimentData, ExperimentMeta } from "../utils/types"
-import Color from "color"
-import { useState } from "react"
+import styles from "./style.module.css"
 
 ChartJS.register(
   LinearScale,
@@ -29,34 +30,23 @@ interface Props {
     data: ExperimentData[]
 }
 
-
+const UNSELECTED = "Select..."
 export default function Experiment({ location, meta, data, next, prev }: Props & { location: string }) {
     const desc = `Visualization for the ${meta.name} experiment for the GUOBA project. The GUOBA Project intends to map out how the artifacts of players perform to improve mathematical models/artifact standards for calculations such as the KQMC.`
+
     const [showLines, setShowLines] = useState(false)
-
-    const datasets = meta.kqmc ? [{
-      label: "KQMC",
-      borderColor: "#6F3995",
-      backgroundColor: "#A474C5",
-      showLine: true,
-      data: meta.kqmc.map(([x, y]) => ({ x, y }))
-    }] : []
-
-    datasets.push(...data.map(d => ({
-      label: d.nickname,
-      data: meta.oneShot ? [{ x: d.ar, y: Math.max(...d.stats.map(([_x, y]) => y)) }] : d.stats.map(([x, y]) => ({ x, y })),
-      showLine: showLines,
-      ...getColor(d)
-    })).sort((a, b) => a.label.localeCompare(b.label)))
+    const [randomColors, setRandomColors] = useState(true)
+    const [markedUser, setMarkedUser] = useState(UNSELECTED)
+    const [minimumX, setMinimumX] = useState(0)
 
     return (
-        <Main>
+      <Main>
         <Head>
-            <title>{meta.name} | The GUOBA Project</title>
-            <meta name="twitter:card" content="summary" />
-            <meta property="og:title" content={`${meta.name} | The GUOBA Project`} />
-            <meta property="og:description" content={desc} />
-            <meta name="description" content={desc} />
+          <title>{meta.name} | The GUOBA Project</title>
+          <meta name="twitter:card" content="summary" />
+          <meta property="og:title" content={`${meta.name} | The GUOBA Project`} />
+          <meta property="og:description" content={desc} />
+          <meta name="description" content={desc} />
         </Head>
 
         <h2 className="font-semibold">
@@ -87,61 +77,127 @@ export default function Experiment({ location, meta, data, next, prev }: Props &
 
         <h3 className="text-lg font-bold pt-1" id="results">Results</h3>
         <CheckboxInput label="Show lines" set={setShowLines} value={showLines} />
-        <div className="w-full bg-slate-800 rounded-xl p-1 my-2 md:my-0 text-white col-start-2">
-          <Scatter data={({
-              datasets: datasets.map(x => ({ ...x, stepped: "after" }))
-            })} options={({
-              color: "white",
-              backgroundColor: "#333333",
-              interaction: {
-                mode: "point",
-                intersect: false
-              },
-              scales: {
-                yAxes: {
-                  ticks: {
-                      color: "white"
-                  },
-                  grid: {
-                    color: "rgb(52,71,102)"
-                  },
-                  title: {
-                      display: true,
-                      color: "rgb(160,160,160)",
-                      text: meta.y
-                  }
-                },
-                xAxes: {
-                  ticks: {
-                      color: "white"
-                  },
-                  grid: {
-                    color: "rgb(52,71,102)"
-                  },
-                  title: {
-                      display: true,
-                      color: "rgb(160,160,160)",
-                      text: meta.oneShot ? "Total Adventure XP" : meta.x
-                  }
-                }
-              },
-              plugins: {
-                tooltip: {
-                  callbacks: {
-                    label: (ti) => `${ti.dataset.label} (${ti.label}, ${ti.formattedValue})`
-                  }
-                }
-              }
-            })} />
-        </div>
+        <CheckboxInput label="Randomize Colors" set={setRandomColors} value={randomColors} />
+        <SelectInput label="Focused User" set={setMarkedUser} value={markedUser} options={[
+          UNSELECTED,
+          ...(meta.kqmc ? ["KQMC"] : []),
+          ...data.map(x => x.nickname).sort()
+        ]} />
+        <UserGraph data={data} showLines={showLines} meta={meta} randomColors={randomColors} markedUser={markedUser} />
+        {!meta.oneShot && <NumberInput label={`Minimum ${meta.x}`} set={setMinimumX} value={minimumX} />}
+        <Leaderboard data={data} markedUser={markedUser} meta={meta} minimumX={minimumX} />
 
         <h3 className="text-lg font-bold pt-1" id="disclaimer">Disclaimer</h3>
         <p>This data is gathered from the GUOBA project. Submit your own data <FormattedLink
             href="https://forms.gle/Gv8rd5XEjH3GzhE36"
             target="form">here</FormattedLink>. Please refer to the <FormattedLink href="/">homepage</FormattedLink> for more information.
         </p>
-        </Main>
+      </Main>
     )
+}
+
+function UserGraph({ meta, data, showLines, randomColors, markedUser }: { meta: ExperimentMeta, data: ExperimentData[], showLines: boolean, randomColors: boolean, markedUser: string }) {
+  const datasets = meta.kqmc ? [{
+    label: "KQMC",
+    borderColor: "#6F3995",
+    backgroundColor: "#A474C5",
+    showLine: true,
+    data: meta.kqmc.map(([x, y]) => ({ x, y }))
+  }] : []
+
+  datasets.push(...data.map(d => ({
+    label: d.nickname,
+    data: meta.oneShot ? [{ x: d.ar, y: Math.max(...d.stats.map(([_x, y]) => y)) }] : d.stats.map(([x, y]) => ({ x, y })),
+    showLine: showLines,
+    ...getColor(d, randomColors, markedUser)
+  })).sort((a, b) => a.label.localeCompare(b.label)))
+
+  return <div className="w-full bg-slate-800 rounded-xl p-1 my-2 md:my-0 text-white col-start-2">
+    <Scatter data={({
+        datasets: datasets.map(x => ({ ...x, stepped: "after" }))
+      })} options={({
+        color: "white",
+        backgroundColor: "#333333",
+        interaction: {
+          mode: "point",
+          intersect: false
+        },
+        scales: {
+          yAxes: {
+            ticks: {
+              color: "white"
+            },
+            grid: {
+              color: "rgb(52,71,102)"
+            },
+            title: {
+              display: true,
+              color: "rgb(160,160,160)",
+              text: meta.y
+            }
+          },
+          xAxes: {
+            ticks: {
+              color: "white"
+            },
+            grid: {
+              color: "rgb(52,71,102)"
+            },
+            title: {
+              display: true,
+              color: "rgb(160,160,160)",
+              text: meta.oneShot ? "Total Adventure XP" : meta.x
+            }
+          }
+        },
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: (ti) => `${ti.dataset.label} (${ti.label}, ${ti.formattedValue})`
+            }
+          }
+        }
+      })} />
+  </div>
+}
+
+function Leaderboard({ data, meta, markedUser, minimumX }: {data: ExperimentData[], meta: ExperimentMeta, markedUser: string, minimumX: number}) {
+  return <table className={`table-auto w-full ${styles.table} my-2 sm:text-base text-sm`}>
+  <thead>
+    <tr className="divide-x divide-gray-200 dark:divide-gray-500">
+      <th>Name</th>
+      <th>Total Adventure XP</th>
+      <th>Affiliation</th>
+      {!meta.oneShot && <th>{meta.x ?? "x"}</th>}
+      <th>{meta.y ?? "y"}</th>
+    </tr>
+  </thead>
+  <tbody className="divide-y divide-gray-200 dark:divide-gray-500">
+    {data
+      .map(c => ({
+        nickname: c.nickname,
+        ar: c.ar,
+        affiliation: c.affiliation,
+        bestStats: c.stats.find(x => meta.oneShot || x[0] >= minimumX)
+      }))
+      .sort((a, b) => {
+        const statA = a?.bestStats?.[1]
+        if (statA == undefined) return 1
+
+        const statB = b?.bestStats?.[1]
+        if (statB == undefined) return -1
+
+        return statB - statA
+      })
+      .map(c => <tr className={`pr-1 divide-x divide-gray-200 dark:divide-gray-500 ${markedUser == c.nickname ? "font-bold" : ""}`} key={c.nickname}>
+        <td>{c.nickname}</td>
+        <td>{c.ar.toLocaleString()}</td>
+        <td>{c.affiliation}</td>
+        {!meta.oneShot && <td>{c.bestStats?.[0]?.toLocaleString() ?? "---"}</td>}
+        <td>{c.bestStats?.[1]?.toLocaleString() ?? "---"}</td>
+      </tr>)}
+  </tbody>
+</table>
 }
 
 function CheckboxInput({ value, set, label }: { value: boolean, set: (newValue: boolean) => unknown, label: string }) {
@@ -156,31 +212,39 @@ function CheckboxInput({ value, set, label }: { value: boolean, set: (newValue: 
   </label></div>
 }
 
-
-function getColor(data: ExperimentData) {
-  let pillarIndex = 0
-  switch(data.affiliation) {
-    case "KQM Theorycraft":
-      pillarIndex = 1
-      break
-    case "KQM Leaks":
-      pillarIndex = 6
-      break
-    case "KQM Guhua":
-      pillarIndex = 5
-      break
-  }
-
-  const a = (Math.random() - 0.5) * 0.6
-  const b = (Math.random() - 0.5) * 0.4
-  const c = (Math.random() - 0.5) * 15
-
-  return {
-    backgroundColor: getColorIndex(pillarIndex, a, b, c, 0.6),
-    borderColor: getColorIndex(pillarIndex, a, b, c, 1),
-    segment: { borderColor: getColorIndex(pillarIndex, a, b, c, .25) }
-  }
+function SelectInput({ value, set, label, options }: { value: string, set: (newValue: string) => unknown, options: string[], label: string }) {
+  return <div><label>
+    {label}
+    <select
+      value={value}
+      onChange={e => set(e.target.value)}
+      className="mt-1 ml-2 mb-2 py-0.5 px-2 border border-gray-300 bg-slate-200 dark:bg-slate-800 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+    >
+      {options.map(opt => <option key={opt}>{opt}</option>)}
+    </select>
+  </label></div>
 }
+
+function NumberInput({ value, set, label, min, max }: { value: number, set: (newValue: number) => unknown, label: string, min?: number, max?: number }) {
+  return <div><label>
+    {label}
+    <input
+      className="bg-slate-200 sm:w-32 w-24 dark:bg-slate-800 rounded-lg px-2 ml-2 mt-1 focus:ring-indigo-500 focus:border-indigo-500"
+      value={value}
+      onChange={(e) => {
+        const value = +e.target.value
+        set(min && value < min ? min : max && value > max ? max : value)
+      }}
+      min={min}
+      max={max}
+      type="number"
+    />
+    <button className={`${value == min ? "bg-slate-800 text-slate-50": "bg-red-500 text-slate-50 cursor-pointer"} text-center rounded-lg px-1 inline-block ml-2 md:sr-only`} tabIndex={-1}  onClick={() => (min == undefined || value > min) ? set(value - 1) : void 0}>Subtract 1</button>
+    <button className={`${value == max ? "bg-slate-800 text-slate-50": "bg-green-500 text-slate-50 cursor-pointer"} text-center rounded-lg px-1 inline-block ml-2 md:sr-only`}  tabIndex={-1}  onClick={() => (max == undefined || value < max) ? set(value + 1) : void 0}>Add 1</button>
+
+  </label></div>
+}
+
 
 const colors = [
   Color({ r: 201, g: 201, b: 201 }), // 0 gray: unknown
@@ -194,9 +258,34 @@ const colors = [
   Color({ r: 255, g: 99, b: 216 }),  // 8 pink: ??
 ]
 
-function getColorIndex(index: number, randomness1: number, randomness2: number, randomness3: number, alpha: number) {
-  const base = colors[index]
+function getColor(data: ExperimentData, randomColors: boolean, markedUser: string) {
+  let base = colors[0]
+  switch(data.affiliation) {
+    case "KQM Theorycraft":
+      base = colors[1]
+      break
+    case "KQM Leaks":
+      base = colors[6]
+      break
+    case "KQM Guhua":
+      base = colors[5]
+      break
+  }
 
+  const a = randomColors ? (Math.random() - 0.5) * 0.6 : 0
+  const b = randomColors ? (Math.random() - 0.5) * 0.4 : 0
+  const c = randomColors ? (Math.random() - 0.5) * 15  : 0
+
+  const mult = markedUser == UNSELECTED ? 1 : data.nickname == markedUser ? 2 : .3
+
+  return {
+    backgroundColor: getColorIndex(base, a, b, c, 0.6 * mult),
+    borderColor: getColorIndex(base, a, b, c, 1.2 * mult),
+    segment: { borderColor: getColorIndex(base, a, b, c, .25 * mult) }
+  }
+}
+
+function getColorIndex(base: Color, randomness1: number, randomness2: number, randomness3: number, alpha: number) {
   return base
     .lighten(randomness1)
     .desaturate(randomness2)
