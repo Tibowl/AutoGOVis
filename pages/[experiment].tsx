@@ -86,7 +86,23 @@ export default function Experiment({ location, meta, data, next, prev }: Props &
           ...data.map(x => x.nickname).sort()
         ]} />
         <UserGraph data={data} showLines={showLines} meta={meta} randomColors={randomColors} markedUser={markedUser} showSpecialData={showSpecialData} />
+        <button className="bg-blue-600 disabled:bg-gray-900 text-slate-50 disabled:text-slate-400 w-fit px-3 py-1 text-center rounded-lg mt-2 cursor-pointer float-right" onClick={() => {
+          const file = {
+            mime: "text/plain",
+            filename: `${meta.template}.csv`,
+            contents: "user,affiliation,ar,x,y\n" +
+              data.flatMap(u => u.stats.map(d => `${u.nickname.replace(/,/g, "")},${u.affiliation.replace(/,/g, "")},${u.ar},${d.join(",")}`)).join("\n"),
+          }
+          const blob = new Blob([file.contents], { type: file.mime }), url = URL.createObjectURL(blob)
+          const link = document.createElement("a")
+          document.body.appendChild(link) // Firefox requires the link to be in the body
+          link.download = file.filename
+          link.href = url
+          link.click()
+          document.body.removeChild(link) // remove the link when done
+        }}>Export to .csv</button>
         {!meta.oneShot && <NumberInput label={`Minimum ${meta.x}`} set={setMinimumX} value={minimumX} />}
+        <div className="clear-both"></div>
         <Leaderboard data={data} markedUser={markedUser} meta={meta} minimumX={minimumX} />
 
         <h3 className="text-lg font-bold pt-1" id="disclaimer">Disclaimer</h3>
