@@ -9,6 +9,21 @@
     "oneShot": false
   },
   {
+    "name": "Xingqiu Burst DMG, Sacrificial Sword",
+    "id": "xingqiu-burst-sacsword",
+    "template": "xingqiu-burst-sacsword",
+    "y": "Sword Rain DMG",
+    "x": "Energy Recharge",
+    "oneShot": false
+  },
+  {
+    "name": "Itto CA, Redhorn Stonethresher",
+    "id": "itto-ca-redhorn",
+    "template": "itto-ca-redhorn",
+    "y": "Arataki Kesagiri Combo Slash DMG",
+    "oneShot": true
+  },
+  {
     "name": "Eula Burst, Song of Broken Pines",
     "id": "eula-burst-sobp",
     "template": "eula-burst-sobp",
