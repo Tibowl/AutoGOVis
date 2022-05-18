@@ -17,6 +17,13 @@
     "oneShot": false
   },
   {
+    "name": "Xiao Plunge, Primordial Jade Winged-Spear",
+    "id": "xiao-plunge-jadespear",
+    "template": "xiao-plunge-jadespear",
+    "y": "Plunge DMG",
+    "oneShot": true
+  },
+  {
     "name": "Itto CA, Redhorn Stonethresher",
     "id": "itto-ca-redhorn",
     "template": "itto-ca-redhorn",
