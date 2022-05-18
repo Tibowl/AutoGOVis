@@ -5,7 +5,9 @@ export interface ExperimentMeta {
   oneShot: boolean
   x?: string
   y?: string
-  kqms?: [number, number][]
+  special?: {
+    [name: string]: [number, number][]
+  }
 }
 
 export interface ExperimentData {

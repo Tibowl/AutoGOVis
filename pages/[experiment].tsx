@@ -36,6 +36,7 @@ export default function Experiment({ location, meta, data, next, prev }: Props &
 
     const [showLines, setShowLines] = useState(true)
     const [randomColors, setRandomColors] = useState(true)
+    const [showSpecialData, setShowSpecialData] = useState(true)
     const [markedUser, setMarkedUser] = useState(UNSELECTED)
     const [minimumX, setMinimumX] = useState(0)
 
@@ -77,13 +78,14 @@ export default function Experiment({ location, meta, data, next, prev }: Props &
 
         <h3 className="text-lg font-bold pt-1" id="results">Results</h3>
         <CheckboxInput label="Show lines" set={setShowLines} value={showLines} />
+        {meta.special && <CheckboxInput label="Show special data" set={setShowSpecialData} value={showSpecialData} />}
         <CheckboxInput label="Randomize Colors" set={setRandomColors} value={randomColors} />
         <SelectInput label="Focused User" set={setMarkedUser} value={markedUser} options={[
           UNSELECTED,
-          ...(meta.kqms ? ["KQMS"] : []),
+          ...(meta.special ? (Object.keys(meta.special).length == 1 ? Object.keys(meta.special) : ["Specials"]) : []),
           ...data.map(x => x.nickname).sort()
         ]} />
-        <UserGraph data={data} showLines={showLines} meta={meta} randomColors={randomColors} markedUser={markedUser} />
+        <UserGraph data={data} showLines={showLines} meta={meta} randomColors={randomColors} markedUser={markedUser} showSpecialData={showSpecialData} />
         {!meta.oneShot && <NumberInput label={`Minimum ${meta.x}`} set={setMinimumX} value={minimumX} />}
         <Leaderboard data={data} markedUser={markedUser} meta={meta} minimumX={minimumX} />
 
@@ -96,14 +98,13 @@ export default function Experiment({ location, meta, data, next, prev }: Props &
     )
 }
 
-function UserGraph({ meta, data, showLines, randomColors, markedUser }: { meta: ExperimentMeta, data: ExperimentData[], showLines: boolean, randomColors: boolean, markedUser: string }) {
-  const datasets = meta.kqms ? [{
-    label: "KQMS",
-    borderColor: "#6F3995",
-    backgroundColor: "#A474C5",
+function UserGraph({ meta, data, showLines, randomColors, showSpecialData, markedUser }: { meta: ExperimentMeta, data: ExperimentData[], showLines: boolean, randomColors: boolean, showSpecialData: boolean, markedUser: string }) {
+  const datasets = (meta.special && showSpecialData) ? Object.entries(meta.special).map(([label, data]) => ({
+    label,
+    ...getColor({ affiliation: "dn", "ar": -1, "nickname": label, "stats": [] }, randomColors, markedUser),
     showLine: true,
-    data: meta.kqms.map(([x, y]) => ({ x, y }))
-  }] : []
+    data: data.map(([x, y]) => ({ x, y }))
+  })) : []
 
   datasets.push(...data.map(d => ({
     label: d.nickname,
@@ -255,7 +256,7 @@ const colors = [
   Color({ r: 201, g: 201, b: 201 }), // 0 gray: unknown
   Color({ r: 255, g: 99, b: 99 }),   // 1 redish: kqm tc
   Color({ r: 255, g: 216, b: 99 }),  // 2 yellow: ??
-  Color({ r: 177, g: 255, b: 99 }),  // 3 green1: ??
+  Color({ r: 177, g: 255, b: 99 }),  // 3 green1: specials
   Color({ r: 99, g: 255, b: 138 }),  // 4 green2: ??
   Color({ r: 99, g: 255, b: 255 }),  // 5 light blue: kqm guhua
   Color({ r: 99, g: 138, b: 255 }),  // 6 dark blue: kqm leaks
@@ -264,6 +265,10 @@ const colors = [
 ]
 
 function getColor(data: ExperimentData, randomColors: boolean, markedUser: string) {
+  if (data.nickname == "KQMS") return {
+    borderColor: "#6F3995",
+    backgroundColor: "#A474C5",
+  }
   let base = colors[0]
   switch(data.affiliation) {
     case "KQM Abyss":
@@ -279,6 +284,8 @@ function getColor(data: ExperimentData, randomColors: boolean, markedUser: strin
       base = colors[5]
       break
   }
+
+  if (data.ar < 0) base = colors[3]
 
   const a = randomColors ? (Math.random() - 0.5) * 0.6 : 0
   const b = randomColors ? (Math.random() - 0.5) * 0.4 : 0
