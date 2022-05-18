@@ -269,6 +269,7 @@ function getColor(data: ExperimentData, randomColors: boolean, markedUser: strin
     borderColor: "#6F3995",
     backgroundColor: "#A474C5",
   }
+
   let base = colors[0]
   switch(data.affiliation) {
     case "KQM Abyss":
@@ -283,6 +284,11 @@ function getColor(data: ExperimentData, randomColors: boolean, markedUser: strin
     case "KQM Guhua":
       base = colors[5]
       break
+  }
+
+  if (data.nickname == "Artesians#0002") {
+    base = Color("#423B17")
+    randomColors = false
   }
 
   if (data.ar < 0) base = colors[3]
