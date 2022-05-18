@@ -13,10 +13,10 @@
     "oneShot": false
   },
   {
-    "name": "Rosaria Burst (Melt), Wavebreaker",
-    "id": "rosaria-burst-melt-wavebreaker",
-    "template": "rosaria-burst-melt-wavebreaker",
-    "y": "Ice Lance DoT (Melt)",
+    "name": "Venti Burst 14 ticks, The Stringless",
+    "id": "venti-14-ticks",
+    "template": "venti-14-ticks",
+    "y": "Total DMG (14 Swirl ticks)",
     "x": "Energy Recharge",
     "oneShot": false
   },
@@ -64,14 +64,16 @@
     "id": "raiden-overvape-c0-the-catch",
     "template": "raiden-overvape-c0-the-catch",
     "y": "Musou no Hitotachi Base DMG",
-    "oneShot": true
+    "x": "Energy Recharge",
+    "oneShot": false
   },
   {
     "name": "Raiden Hypercarry, C3, Engulfing Lightning",
     "id": "raiden-hypercarry-c3-el",
     "template": "raiden-hypercarry-c3-el",
     "y": "Musou no Hitotachi Base DMG",
-    "oneShot": true
+    "x": "Energy Recharge",
+    "oneShot": false
   },
   {
     "name": "Xiangling Pyronado DMG vs. ER",
