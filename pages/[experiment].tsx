@@ -165,6 +165,7 @@ function Leaderboard({ data, meta, markedUser, minimumX }: {data: ExperimentData
   return <table className={`table-auto w-full ${styles.table} my-2 sm:text-base text-sm`}>
   <thead>
     <tr className="divide-x divide-gray-200 dark:divide-gray-500">
+      <th>#</th>
       <th>Name</th>
       <th>Total Adventure XP</th>
       <th>Affiliation</th>
@@ -189,7 +190,8 @@ function Leaderboard({ data, meta, markedUser, minimumX }: {data: ExperimentData
 
         return statB - statA
       })
-      .map(c => <tr className={`pr-1 divide-x divide-gray-200 dark:divide-gray-500 ${markedUser == c.nickname ? "font-bold" : ""}`} key={c.nickname}>
+      .map((c, i) => <tr className={`pr-1 divide-x divide-gray-200 dark:divide-gray-500 ${markedUser == c.nickname ? "font-bold" : ""}`} key={c.nickname}>
+        <td>#{i+1}</td>
         <td>{c.nickname}</td>
         <td>{c.ar.toLocaleString()}</td>
         <td>{c.affiliation}</td>
