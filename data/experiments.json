@@ -9,6 +9,20 @@
     "oneShot": false
   },
   {
+    "name": "Raiden Overvape, C0, Engulfing Lightning",
+    "id": "raiden-overvape-c0-the-catch",
+    "template": "raiden-overvape-c0-the-catch",
+    "y": "Musou no Hitotachi Base DMG",
+    "oneShot": true
+  },
+  {
+    "name": "Raiden Hypercarry, C3, Everlasting ",
+    "id": "raiden-hypercarry-c3-el",
+    "template": "raiden-hypercarry-c3-el",
+    "y": "Musou no Hitotachi Base DMG",
+    "oneShot": true
+  },
+  {
     "name": "Xiangling Pyronado DMG vs. ER",
     "id": "xiangling-pyronado-er",
     "template": "xiangling-pyronado-the-catch-er",
