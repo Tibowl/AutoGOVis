@@ -40,14 +40,16 @@
     "id": "xiao-plunge-jadespear",
     "template": "xiao-plunge-jadespear",
     "y": "Plunge DMG",
-    "oneShot": true
+    "x": "Energy Recharge",
+    "oneShot": false
   },
   {
     "name": "Itto CA, Redhorn Stonethresher",
     "id": "itto-ca-redhorn",
     "template": "itto-ca-redhorn",
     "y": "Arataki Kesagiri Combo Slash DMG",
-    "oneShot": true
+    "x": "Energy Recharge",
+    "oneShot": false
   },
   {
     "name": "Eula Burst, Song of Broken Pines",
