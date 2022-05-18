@@ -256,13 +256,16 @@ const colors = [
   Color({ r: 99, g: 255, b: 138 }),  // 4 green2: ??
   Color({ r: 99, g: 255, b: 255 }),  // 5 light blue: kqm guhua
   Color({ r: 99, g: 138, b: 255 }),  // 6 dark blue: kqm leaks
-  Color({ r: 177, g: 99, b: 255 }),  // 7 purple: ??
+  Color({ r: 177, g: 99, b: 255 }),  // 7 purple: kqm abyss
   Color({ r: 255, g: 99, b: 216 }),  // 8 pink: ??
 ]
 
 function getColor(data: ExperimentData, randomColors: boolean, markedUser: string) {
   let base = colors[0]
   switch(data.affiliation) {
+    case "KQM Abyss":
+      base = colors[7]
+      break
     case "KQM Theorycraft":
       base = colors[1]
       break
