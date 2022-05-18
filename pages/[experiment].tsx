@@ -23,12 +23,14 @@ ChartJS.register(
 )
 
 interface Props {
+    next?: ExperimentMeta,
     meta: ExperimentMeta,
+    prev?: ExperimentMeta,
     data: ExperimentData[]
 }
 
 
-export default function Experiment({ location, meta, data }: Props & { location: string }) {
+export default function Experiment({ location, meta, data, next, prev }: Props & { location: string }) {
     const desc = `Visualization for the ${meta.name} experiment for the GUOBA project. The GUOBA Project intends to map out how the artifacts of players perform to improve mathematical models/artifact standards for calculations such as the KQMC.`
     const [showLines, setShowLines] = useState(false)
 
@@ -45,7 +47,7 @@ export default function Experiment({ location, meta, data }: Props & { location:
       data: meta.oneShot ? [{ x: d.ar, y: Math.max(...d.stats.map(([_x, y]) => y)) }] : d.stats.map(([x, y]) => ({ x, y })),
       showLine: showLines,
       ...getColor(d)
-    })))
+    })).sort((a, b) => a.label.localeCompare(b.label)))
 
     return (
         <Main>
@@ -63,9 +65,22 @@ export default function Experiment({ location, meta, data }: Props & { location:
           </FormattedLink>
         </h2>
 
-        <h1 className="text-3xl font-bold pb-2">
+        <h1 className="text-3xl font-bold pb-0">
             Experiment: {meta.name}
         </h1>
+        <div className="flex justify-between text-base pb-1">
+          <div className="px-1">
+            {prev && <FormattedLink href={`/${prev.id}`} location={location} className="font-bold text-base">
+              &larr; {prev.name}
+            </FormattedLink>}
+          </div>
+
+          <div>
+            {next && <FormattedLink href={`/${next.id}`} location={location} className="font-bold text-base">
+                {next.name} &rarr;
+              </FormattedLink>}
+          </div>
+        </div>
 
         <h3 className="text-lg font-bold pt-1" id="template">Template</h3>
         <p>The template with assumptions for this experiment can be found on <FormattedLink href={`https://github.com/Tibowl/AutoGO/blob/master/templates/${meta.template}.json`} target="github">GitHub</FormattedLink>.</p>
@@ -198,34 +213,37 @@ const level = [
 ]
 
 export async function getStaticProps(context: GetStaticPropsContext): Promise<GetStaticPropsResult<Props>> {
-  const experimentName = context.params?.experiment
-  const experiments = JSON.parse((await readFile("./data/experiments.json")).toString())
-  const users = JSON.parse((await readFile("./data/users.json")).toString()) as {
-    "responseId": string,
-    "createTime": string,
-    "lastSubmittedTime": string,
-    "arLvl": string,
-    "arXP": string,
-    "server": string,
-    "dbFile": {
-      "fileId": string
-    },
-    "discord": string,
-    "affiliation": string,
-    "hasWeapons": "Yes" | "No",
-    "hasChars": "Yes" | "No",
-    "showTag": "Yes" | "No"
-  }[]
-
-  const meta = (experiments?.find((ex: ExperimentMeta) => ex.id == experimentName) as undefined | ExperimentMeta)
-  if (!experiments || !meta || !users) {
-    return {
-      notFound: true,
-      revalidate: 15 * 60
-    }
-  }
-
   try {
+    const experimentName = context.params?.experiment
+    const experiments = JSON.parse((await readFile("./data/experiments.json")).toString()) as ExperimentMeta[] | undefined
+    const users = JSON.parse((await readFile("./data/users.json")).toString()) as {
+      "responseId": string,
+      "createTime": string,
+      "lastSubmittedTime": string,
+      "arLvl": string,
+      "arXP": string,
+      "server": string,
+      "dbFile": {
+        "fileId": string
+      },
+      "discord": string,
+      "affiliation": string,
+      "hasWeapons": "Yes" | "No",
+      "hasChars": "Yes" | "No",
+      "showTag": "Yes" | "No"
+    }[]
+
+    const meta = (experiments?.find(ex => ex.id == experimentName) as undefined | ExperimentMeta)
+    if (!experiments || !meta || !users) {
+      return {
+        notFound: true,
+        revalidate: 15 * 60
+      }
+    }
+    const index = experiments.indexOf(meta)
+    const next = experiments[index + 1] ?? null
+    const prev = experiments[index - 1] ?? null
+
     const output = JSON.parse((await readFile(`./data/output/${meta.template}.json`)).toString()) as {user: string, stats: [number, number][]}[]
     const data: ExperimentData[] = output.map(o => {
       const user = users.find(u => u.dbFile.fileId + ".json" == o.user)
@@ -239,6 +257,8 @@ export async function getStaticProps(context: GetStaticPropsContext): Promise<Ge
 
     return {
       props: {
+        prev,
+        next,
         meta,
         data
       },
