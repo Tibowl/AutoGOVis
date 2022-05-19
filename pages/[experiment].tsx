@@ -198,7 +198,7 @@ function Leaderboard({ data, meta, markedUser, minimumX }: {data: ExperimentData
 
         return statB - statA
       })
-      .map((c, i) => <tr className={`pr-1 divide-x divide-gray-200 dark:divide-gray-500 ${markedUser == c.nickname ? "font-bold" : ""}`} key={c.nickname}>
+      .map((c, i) => <tr className={`pr-1 divide-x divide-gray-200 dark:divide-gray-500 ${markedUser == c.nickname ? "font-bold" : ""}`} key={i}>
         <td>#{i+1}</td>
         <td>{c.nickname}</td>
         <td>{c.ar.toLocaleString()}</td>
