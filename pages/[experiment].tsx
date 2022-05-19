@@ -5,7 +5,7 @@ import Color from "color"
 import { readFile } from "fs/promises"
 import { GetStaticPathsResult, GetStaticPropsContext, GetStaticPropsResult } from "next"
 import Head from "next/head"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Scatter } from "react-chartjs-2"
 import FormattedLink from "../components/FormattedLink"
 import Main from "../components/Main"
@@ -38,8 +38,16 @@ export default function Experiment({ location, meta, data, next, prev }: Props &
     const [randomColors, setRandomColors] = useState(true)
     const [showSpecialData, setShowSpecialData] = useState(true)
     const [showPercentiles, setShowPercentiles] = useState(false)
+    const [showBoth, setShowBoth] = useState(false)
     const [markedUser, setMarkedUser] = useState(UNSELECTED)
     const [minimumX, setMinimumX] = useState(0)
+    const [percentiles, setPercentiles] = useState([1, 25, 50, 75, 99])
+
+    let shownData = data
+    if (showPercentiles && !showBoth)
+      shownData = getPercentiles(data, percentiles)
+    else if (showBoth)
+      shownData = [...data, ...getPercentiles(data, percentiles)]
 
     return (
       <Main>
@@ -82,12 +90,15 @@ export default function Experiment({ location, meta, data, next, prev }: Props &
         {meta.special && <CheckboxInput label="Show special data" set={setShowSpecialData} value={showSpecialData} />}
         <CheckboxInput label="Randomize colors" set={setRandomColors} value={randomColors} />
         <CheckboxInput label="Show percentiles" set={setShowPercentiles} value={showPercentiles} />
+        {showPercentiles && <CheckboxInput label="Show both users and percentiles" set={setShowBoth} value={showBoth} />}
+        {showPercentiles && <NumberInputList label="Shown percentiles" set={setPercentiles} value={percentiles} defaultValue={50} min={0} max={100} />}
         <SelectInput label="Focused user" set={setMarkedUser} value={markedUser} options={[
           UNSELECTED,
           ...(meta.special ? (Object.keys(meta.special).length == 1 ? Object.keys(meta.special) : ["Specials"]) : []),
+          ...(showPercentiles ? ["Percentiles"] : []),
           ...data.map(x => x.nickname).sort()
         ]} />
-        <UserGraph data={showPercentiles ? getPercentiles(data) : data} showLines={showLines} meta={meta} randomColors={randomColors} markedUser={markedUser} showSpecialData={showSpecialData} />
+        <UserGraph data={shownData} showLines={showLines} meta={meta} randomColors={randomColors} markedUser={markedUser} showSpecialData={showSpecialData} />
         <button className="bg-blue-600 disabled:bg-gray-900 text-slate-50 disabled:text-slate-400 w-fit px-3 py-1 text-center rounded-lg mt-2 cursor-pointer float-right" onClick={() => exportCSV(meta, data)}>Export to .csv</button>
         {!meta.oneShot && <NumberInput label={`Minimum ${meta.x}`} set={setMinimumX} value={minimumX} />}
         <div className="clear-both"></div>
@@ -255,12 +266,49 @@ function NumberInput({ value, set, label, min, max }: { value: number, set: (new
   </label></div>
 }
 
+function NumberInputList({ value, set, label, defaultValue, min, max }: { value: number[], set: (newValue: number[]) => unknown, label: string, defaultValue: number, min?: number, max?: number }) {
+  const [target, setTarget] = useState(defaultValue)
 
-function getPercentiles(data: ExperimentData[]): ExperimentData[] {
+  function add(v: number) {
+    const newValue = [...value, v].sort().filter((v, i, a) => a.indexOf(v) == i)
+    set(newValue)
+  }
+  function remove(v: number) {
+    set(value.filter(v2 => v != v2))
+  }
+
+  return <div><label>
+    {label}
+    <input
+      className="bg-slate-200 sm:w-32 w-24 dark:bg-slate-800 rounded-lg px-2 ml-2 mt-1 focus:ring-indigo-500 focus:border-indigo-500"
+      min={min}
+      max={max}
+      value={target}
+      onChange={(e) => {
+        const value = +e.target.value
+        setTarget(min && value < min ? min : max && value > max ? max : value)
+      }}
+      onKeyDown={e => {
+        if (e.key == "Enter") {
+          e.preventDefault()
+          add(parseInt(e.currentTarget.value))
+        }
+      }}
+      type="number"
+    />
+    <button className={"bg-green-500 text-slate-50 cursor-pointer text-center rounded-lg px-1 inline-block ml-2"}  tabIndex={-1}  onClick={() => add(target)}>Add {target}</button>
+    {value.map(v => <button key={v} className={"bg-red-500 text-slate-50 cursor-pointer text-center rounded-lg px-1 inline-block ml-2"}  tabIndex={-1}  onClick={() => remove(v)}>Remove {v}</button>)}
+
+
+  </label></div>
+}
+
+
+function getPercentiles(data: ExperimentData[], percents: number[]): ExperimentData[] {
   const percentiles: {
     percentile: number,
     stats: [number, number][]
-  }[] = [1, 25, 50, 75, 99].map(i => ({ percentile: i, stats: [] }))
+  }[] = percents.map(i => ({ percentile: i, stats: [] }))
 
   const dn = data.flatMap(x => x.stats.map(x => x[0])).filter((v, i, a) => a.indexOf(v) == i).sort()
 
@@ -319,19 +367,31 @@ function getColor(data: ExperimentData, randomColors: boolean, markedUser: strin
     randomColors = false
   }
 
+  let mult = .2
+
+  if (markedUser == UNSELECTED) {
+    if (data.ar < 0 && data.affiliation == "percentile")
+      mult = 1.3
+    else
+      mult = 0.5
+  } else if (data.nickname == markedUser)
+    mult = 2
+
   if (data.ar < 0) {
     base = Color({ r: 177, g: 255, b: 99 }) // specials
     if (data.affiliation == "percentile") {
       base = Color({ r: 99, g: 255, b: 255 }).darken(parseInt(data.nickname.replace("%", "")) / 150)
       randomColors = false
-    }
+      if (markedUser == "Percentiles")
+        mult = 2
+    } else if (markedUser == "Specials")
+      mult = 2
   }
 
   const a = randomColors ? (Math.random() - 0.5) * 0.6 : 0
   const b = randomColors ? (Math.random() - 0.5) * 0.4 : 0
   const c = randomColors ? (Math.random() - 0.5) * 15  : 0
 
-  const mult = markedUser == UNSELECTED ? (data.ar < 0 && data.affiliation == "percentile" ? 1.3 : .5) : (data.nickname == markedUser || (markedUser == "Specials" && data.ar < 0)) ? 2 : .2
 
   return {
     backgroundColor: getColorIndex(base, a, b, c, 0.6 * mult),
