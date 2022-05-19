@@ -80,9 +80,9 @@ export default function Experiment({ location, meta, data, next, prev }: Props &
         <h3 className="text-lg font-bold pt-1" id="results">Results</h3>
         <CheckboxInput label="Show lines" set={setShowLines} value={showLines} />
         {meta.special && <CheckboxInput label="Show special data" set={setShowSpecialData} value={showSpecialData} />}
-        <CheckboxInput label="Randomize Colors" set={setRandomColors} value={randomColors} />
-        <CheckboxInput label="Show Percentiles" set={setShowPercentiles} value={showPercentiles} />
-        <SelectInput label="Focused User" set={setMarkedUser} value={markedUser} options={[
+        <CheckboxInput label="Randomize colors" set={setRandomColors} value={randomColors} />
+        <CheckboxInput label="Show percentiles" set={setShowPercentiles} value={showPercentiles} />
+        <SelectInput label="Focused user" set={setMarkedUser} value={markedUser} options={[
           UNSELECTED,
           ...(meta.special ? (Object.keys(meta.special).length == 1 ? Object.keys(meta.special) : ["Specials"]) : []),
           ...data.map(x => x.nickname).sort()
