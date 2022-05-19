@@ -37,6 +37,7 @@ export default function Experiment({ location, meta, data, next, prev }: Props &
     const [showLines, setShowLines] = useState(true)
     const [randomColors, setRandomColors] = useState(true)
     const [showSpecialData, setShowSpecialData] = useState(true)
+    const [showPercentiles, setShowPercentiles] = useState(false)
     const [markedUser, setMarkedUser] = useState(UNSELECTED)
     const [minimumX, setMinimumX] = useState(0)
 
@@ -80,12 +81,13 @@ export default function Experiment({ location, meta, data, next, prev }: Props &
         <CheckboxInput label="Show lines" set={setShowLines} value={showLines} />
         {meta.special && <CheckboxInput label="Show special data" set={setShowSpecialData} value={showSpecialData} />}
         <CheckboxInput label="Randomize Colors" set={setRandomColors} value={randomColors} />
+        <CheckboxInput label="Show Percentiles" set={setShowPercentiles} value={showPercentiles} />
         <SelectInput label="Focused User" set={setMarkedUser} value={markedUser} options={[
           UNSELECTED,
           ...(meta.special ? (Object.keys(meta.special).length == 1 ? Object.keys(meta.special) : ["Specials"]) : []),
           ...data.map(x => x.nickname).sort()
         ]} />
-        <UserGraph data={data} showLines={showLines} meta={meta} randomColors={randomColors} markedUser={markedUser} showSpecialData={showSpecialData} />
+        <UserGraph data={showPercentiles ? getPercentiles(data) : data} showLines={showLines} meta={meta} randomColors={randomColors} markedUser={markedUser} showSpecialData={showSpecialData} />
         <button className="bg-blue-600 disabled:bg-gray-900 text-slate-50 disabled:text-slate-400 w-fit px-3 py-1 text-center rounded-lg mt-2 cursor-pointer float-right" onClick={() => {
           const file = {
             mime: "text/plain",
@@ -112,6 +114,36 @@ export default function Experiment({ location, meta, data, next, prev }: Props &
         </p>
       </Main>
     )
+}
+
+function getPercentiles(data: ExperimentData[]): ExperimentData[] {
+  const percentiles = [1, 25, 50, 75, 99]
+  const globalMin = data.flatMap(x => x.stats.map(x => x[0])).filter((v, i, a) => a.indexOf(v) == i).sort()[0]
+  return percentiles.map(i => {
+    const stats: [number, number][] = []
+    let max: number = Number.NEGATIVE_INFINITY
+
+    while (true) {
+        const values = data.map(u => u.stats.find(s => s[0] > max)).sort((a, b) => (b?.[1] ?? 0) - (a?.[1] ?? 0))
+        const value = values[Math.floor(values.length * i / 100)]
+
+        if (value == undefined) break
+        if (value[1] == undefined) break
+
+        if (stats.length == 0)
+          stats.push([globalMin, value[1]])
+
+        stats.push(value)
+        max = value[0]
+    }
+
+
+    return {
+      affiliation: "percentile",
+      ar: -1,
+      nickname: `${i}%`,
+      stats
+    }})
 }
 
 function UserGraph({ meta, data, showLines, randomColors, showSpecialData, markedUser }: { meta: ExperimentMeta, data: ExperimentData[], showLines: boolean, randomColors: boolean, showSpecialData: boolean, markedUser: string }) {
@@ -313,13 +345,19 @@ function getColor(data: ExperimentData, randomColors: boolean, markedUser: strin
     randomColors = false
   }
 
-  if (data.ar < 0) base = colors[3]
+  if (data.ar < 0) {
+    base = colors[3]
+    if (data.affiliation == "percentile") {
+      base = colors[5].darken(parseInt(data.nickname.replace("%", "")) / 150)
+      randomColors = false
+    }
+  }
 
   const a = randomColors ? (Math.random() - 0.5) * 0.6 : 0
   const b = randomColors ? (Math.random() - 0.5) * 0.4 : 0
   const c = randomColors ? (Math.random() - 0.5) * 15  : 0
 
-  const mult = markedUser == UNSELECTED ? .5 : (data.nickname == markedUser || (markedUser == "Specials" && data.ar < 0)) ? 2 : .2
+  const mult = markedUser == UNSELECTED ? (data.ar < 0 && data.affiliation == "percentile" ? 1.3 : .5) : (data.nickname == markedUser || (markedUser == "Specials" && data.ar < 0)) ? 2 : .2
 
   return {
     backgroundColor: getColorIndex(base, a, b, c, 0.6 * mult),
