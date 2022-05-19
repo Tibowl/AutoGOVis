@@ -94,7 +94,7 @@ export default function Experiment({ location, meta, data, next, prev }: Props &
         {showPercentiles && <NumberInputList label="Shown percentiles" set={setPercentiles} value={percentiles} defaultValue={50} min={0} max={100} />}
         <SelectInput label="Focused user" set={setMarkedUser} value={markedUser} options={[
           UNSELECTED,
-          ...(meta.special ? (Object.keys(meta.special).length == 1 ? Object.keys(meta.special) : ["Specials"]) : []),
+          ...(meta.special && showSpecialData ? (Object.keys(meta.special).length == 1 ? Object.keys(meta.special) : ["Specials"]) : []),
           ...(showPercentiles ? ["Percentiles"] : []),
           ...data.map(x => x.nickname).sort()
         ]} />
@@ -466,15 +466,16 @@ export async function getStaticProps(context: GetStaticPropsContext): Promise<Ge
     const prev = experiments[index - 1] ?? null
 
     const output = JSON.parse((await readFile(`./data/output/${meta.template}.json`)).toString()) as {user: string, stats: [number, number][]}[]
+    let i = 0
     const data: ExperimentData[] = output.map(o => {
       const user = users.find(u => u.dbFile.fileId + ".json" == o.user)
       return {
-        nickname: (user?.showTag == "Yes") ? user?.discord : "Anonymous",
+        nickname: (user?.showTag == "Yes") ? user?.discord : `Anonymous #${++i}`,
         affiliation: user?.affiliation || "Unaffiliated",
         stats: o.stats,
         ar: parseInt(user?.arXP ?? "0") + level[parseInt(user?.arLvl ?? "0")]
       }
-    })
+    }).sort((a, b) => a.nickname.localeCompare(b.nickname))
 
     return {
       props: {
