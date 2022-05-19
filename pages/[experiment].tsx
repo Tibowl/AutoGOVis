@@ -271,7 +271,7 @@ function NumberInput({ value, set, label, min, max }: { value: number, set: (new
 const colors = [
   Color({ r: 201, g: 201, b: 201 }), // 0 gray: unknown
   Color({ r: 255, g: 99, b: 99 }),   // 1 redish: kqm tc
-  Color({ r: 255, g: 216, b: 99 }),  // 2 yellow: ??
+  Color({ r: 255, g: 216, b: 99 }),  // 2 yellow: GO
   Color({ r: 177, g: 255, b: 99 }),  // 3 green1: specials
   Color({ r: 99, g: 255, b: 138 }),  // 4 green2: ??
   Color({ r: 99, g: 255, b: 255 }),  // 5 light blue: kqm guhua
@@ -299,6 +299,9 @@ function getColor(data: ExperimentData, randomColors: boolean, markedUser: strin
       break
     case "KQM Guhua":
       base = colors[5]
+      break
+    case "Genshin Optimizer":
+      base = colors[2]
       break
   }
 
