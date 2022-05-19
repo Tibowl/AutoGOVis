@@ -270,7 +270,7 @@ function NumberInputList({ value, set, label, defaultValue, min, max }: { value:
   const [target, setTarget] = useState(defaultValue)
 
   function add(v: number) {
-    const newValue = [...value, v].sort().filter((v, i, a) => a.indexOf(v) == i)
+    const newValue = [...value, v].sort((a, b) => a-b).filter((v, i, a) => a.indexOf(v) == i)
     set(newValue)
   }
   function remove(v: number) {
