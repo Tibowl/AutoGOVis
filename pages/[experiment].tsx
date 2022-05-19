@@ -117,33 +117,31 @@ export default function Experiment({ location, meta, data, next, prev }: Props &
 }
 
 function getPercentiles(data: ExperimentData[]): ExperimentData[] {
-  const percentiles = [1, 25, 50, 75, 99]
-  const globalMin = data.flatMap(x => x.stats.map(x => x[0])).filter((v, i, a) => a.indexOf(v) == i).sort()[0]
-  return percentiles.map(i => {
-    const stats: [number, number][] = []
-    let max: number = Number.NEGATIVE_INFINITY
+  const percentiles: {
+    percentile: number,
+    stats: [number, number][]
+  }[] = [1, 25, 50, 75, 99].map(i => ({ percentile: i, stats: [] }))
 
-    while (true) {
-        const values = data.map(u => u.stats.find(s => s[0] > max)).sort((a, b) => (b?.[1] ?? 0) - (a?.[1] ?? 0))
-        const value = values[Math.floor(values.length * i / 100)]
+  const dn = data.flatMap(x => x.stats.map(x => x[0])).filter((v, i, a) => a.indexOf(v) == i).sort()
 
-        if (value == undefined) break
-        if (value[1] == undefined) break
+  dn.forEach(x => {
+    const values = data.map(u => u.stats.find(s => s[0] >= x)).sort((a, b) => (b?.[1] ?? 0) - (a?.[1] ?? 0))
 
-        if (stats.length == 0)
-          stats.push([globalMin, value[1]])
+    percentiles.forEach(p => {
+      const value = values[Math.floor(values.length * p.percentile / 100)]
+      if (value == undefined) return
+      if (p.stats.length > 1 && p.stats[p.stats.length - 1]?.[1] == value?.[1])
+        p.stats.pop()
+      p.stats.push([x, value[1]])
+    })
+  })
 
-        stats.push(value)
-        max = value[0]
-    }
-
-
-    return {
+  return percentiles.map(p => ({
       affiliation: "percentile",
       ar: -1,
-      nickname: `${i}%`,
-      stats
-    }})
+      nickname: `${p.percentile}%`,
+      stats: p.stats
+    }))
 }
 
 function UserGraph({ meta, data, showLines, randomColors, showSpecialData, markedUser }: { meta: ExperimentMeta, data: ExperimentData[], showLines: boolean, randomColors: boolean, showSpecialData: boolean, markedUser: string }) {
