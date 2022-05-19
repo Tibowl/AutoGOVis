@@ -88,21 +88,7 @@ export default function Experiment({ location, meta, data, next, prev }: Props &
           ...data.map(x => x.nickname).sort()
         ]} />
         <UserGraph data={showPercentiles ? getPercentiles(data) : data} showLines={showLines} meta={meta} randomColors={randomColors} markedUser={markedUser} showSpecialData={showSpecialData} />
-        <button className="bg-blue-600 disabled:bg-gray-900 text-slate-50 disabled:text-slate-400 w-fit px-3 py-1 text-center rounded-lg mt-2 cursor-pointer float-right" onClick={() => {
-          const file = {
-            mime: "text/plain",
-            filename: `${meta.template}.csv`,
-            contents: "user,affiliation,ar,x,y\n" +
-              data.flatMap(u => u.stats.map(d => `${u.nickname.replace(/,/g, "")},${u.affiliation.replace(/,/g, "")},${u.ar},${d.join(",")}`)).join("\n"),
-          }
-          const blob = new Blob([file.contents], { type: file.mime }), url = URL.createObjectURL(blob)
-          const link = document.createElement("a")
-          document.body.appendChild(link) // Firefox requires the link to be in the body
-          link.download = file.filename
-          link.href = url
-          link.click()
-          document.body.removeChild(link) // remove the link when done
-        }}>Export to .csv</button>
+        <button className="bg-blue-600 disabled:bg-gray-900 text-slate-50 disabled:text-slate-400 w-fit px-3 py-1 text-center rounded-lg mt-2 cursor-pointer float-right" onClick={() => exportCSV(meta, data)}>Export to .csv</button>
         {!meta.oneShot && <NumberInput label={`Minimum ${meta.x}`} set={setMinimumX} value={minimumX} />}
         <div className="clear-both"></div>
         <Leaderboard data={data} markedUser={markedUser} meta={meta} minimumX={minimumX} />
@@ -114,34 +100,6 @@ export default function Experiment({ location, meta, data, next, prev }: Props &
         </p>
       </Main>
     )
-}
-
-function getPercentiles(data: ExperimentData[]): ExperimentData[] {
-  const percentiles: {
-    percentile: number,
-    stats: [number, number][]
-  }[] = [1, 25, 50, 75, 99].map(i => ({ percentile: i, stats: [] }))
-
-  const dn = data.flatMap(x => x.stats.map(x => x[0])).filter((v, i, a) => a.indexOf(v) == i).sort()
-
-  dn.forEach(x => {
-    const values = data.map(u => u.stats.find(s => s[0] >= x)).sort((a, b) => (b?.[1] ?? 0) - (a?.[1] ?? 0))
-
-    percentiles.forEach(p => {
-      const value = values[Math.floor(values.length * p.percentile / 100)]
-      if (value == undefined) return
-      if (p.stats.length > 1 && p.stats[p.stats.length - 1]?.[1] == value?.[1])
-        p.stats.pop()
-      p.stats.push([x, value[1]])
-    })
-  })
-
-  return percentiles.map(p => ({
-      affiliation: "percentile",
-      ar: -1,
-      nickname: `${p.percentile}%`,
-      stats: p.stats
-    }))
 }
 
 function UserGraph({ meta, data, showLines, randomColors, showSpecialData, markedUser }: { meta: ExperimentMeta, data: ExperimentData[], showLines: boolean, randomColors: boolean, showSpecialData: boolean, markedUser: string }) {
@@ -298,17 +256,34 @@ function NumberInput({ value, set, label, min, max }: { value: number, set: (new
 }
 
 
-const colors = [
-  Color({ r: 201, g: 201, b: 201 }), // 0 gray: unknown
-  Color({ r: 255, g: 99, b: 99 }),   // 1 redish: kqm tc
-  Color({ r: 255, g: 216, b: 99 }),  // 2 yellow: GO
-  Color({ r: 177, g: 255, b: 99 }),  // 3 green1: specials
-  Color({ r: 99, g: 255, b: 138 }),  // 4 green2: ??
-  Color({ r: 99, g: 255, b: 255 }),  // 5 light blue: kqm guhua
-  Color({ r: 99, g: 138, b: 255 }),  // 6 dark blue: kqm leaks
-  Color({ r: 177, g: 99, b: 255 }),  // 7 purple: kqm abyss
-  Color({ r: 255, g: 99, b: 216 }),  // 8 pink: TTDS mains
-]
+function getPercentiles(data: ExperimentData[]): ExperimentData[] {
+  const percentiles: {
+    percentile: number,
+    stats: [number, number][]
+  }[] = [1, 25, 50, 75, 99].map(i => ({ percentile: i, stats: [] }))
+
+  const dn = data.flatMap(x => x.stats.map(x => x[0])).filter((v, i, a) => a.indexOf(v) == i).sort()
+
+  dn.forEach(x => {
+    const values = data.map(u => u.stats.find(s => s[0] >= x)).sort((a, b) => (b?.[1] ?? 0) - (a?.[1] ?? 0))
+
+    percentiles.forEach(p => {
+      const value = values[Math.floor(values.length * p.percentile / 100)]
+      if (value == undefined) return
+      if (p.stats.length > 1 && p.stats[p.stats.length - 1]?.[1] == value?.[1])
+        p.stats.pop()
+      p.stats.push([x, value[1]])
+    })
+  })
+
+  return percentiles.map(p => ({
+      affiliation: "percentile",
+      ar: -1,
+      nickname: `${p.percentile}%`,
+      stats: p.stats
+    }))
+}
+
 
 function getColor(data: ExperimentData, randomColors: boolean, markedUser: string) {
   if (data.nickname == "KQMS") return {
@@ -316,26 +291,27 @@ function getColor(data: ExperimentData, randomColors: boolean, markedUser: strin
     backgroundColor: "#A474C5",
   }
 
-  let base = colors[0]
+  let base = Color({ r: 201, g: 201, b: 201 }) // gray
   switch(data.affiliation) {
     case "KQM Abyss":
-      base = colors[7]
+      base = Color({ r: 177, g: 99, b: 255 }) // purple
       break
     case "KQM Theorycraft":
-      base = colors[1]
+      base = Color({ r: 255, g: 99, b: 99 }) // red
       break
     case "KQM Leaks":
-      base = colors[6]
+      base = Color({ r: 99, g: 138, b: 255 }) // dark blue
       break
     case "KQM Guhua":
-      base = colors[5]
+      base = Color({ r: 99, g: 255, b: 255 }) // light blue
       break
     case "Genshin Optimizer":
-      base = colors[2]
+      base = Color({ r: 255, g: 216, b: 99 }) // yellow
       break
     case "TTDS Mains":
-      base = colors[8]
+      base = Color({ r: 255, g: 99, b: 216 }) // pink
       break
+    // unused Color({ r: 99, g: 255, b: 138 }): green2
   }
 
   if (data.nickname == "Artesians#0002") {
@@ -344,9 +320,9 @@ function getColor(data: ExperimentData, randomColors: boolean, markedUser: strin
   }
 
   if (data.ar < 0) {
-    base = colors[3]
+    base = Color({ r: 177, g: 255, b: 99 }) // specials
     if (data.affiliation == "percentile") {
-      base = colors[5].darken(parseInt(data.nickname.replace("%", "")) / 150)
+      base = Color({ r: 99, g: 255, b: 255 }).darken(parseInt(data.nickname.replace("%", "")) / 150)
       randomColors = false
     }
   }
@@ -372,6 +348,22 @@ function getColorIndex(base: Color, randomness1: number, randomness2: number, ra
     .hue(base.hue() + randomness3)
     .alpha(alpha)
     .toString()
+}
+
+function exportCSV(meta: ExperimentMeta, data: ExperimentData[]) {
+  const file = {
+    mime: "text/plain",
+    filename: `${meta.template}.csv`,
+    contents: "user,affiliation,ar,x,y\n" +
+      data.flatMap(u => u.stats.map(d => `${u.nickname.replace(/,/g, "")},${u.affiliation.replace(/,/g, "")},${u.ar},${d.join(",")}`)).join("\n"),
+  }
+  const blob = new Blob([file.contents], { type: file.mime }), url = URL.createObjectURL(blob)
+  const link = document.createElement("a")
+  document.body.appendChild(link) // Firefox requires the link to be in the body
+  link.download = file.filename
+  link.href = url
+  link.click()
+  document.body.removeChild(link) // remove the link when done
 }
 
 const level = [
