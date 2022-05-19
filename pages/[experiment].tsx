@@ -45,7 +45,7 @@ export default function Experiment({ location, meta, data, next, prev }: Props &
 
     let shownData = data
     if (showPercentiles && !showBoth)
-      shownData = getPercentiles(data, percentiles)
+      shownData = [...data.filter(x => x.nickname == markedUser), ...getPercentiles(data, percentiles)]
     else if (showBoth)
       shownData = [...data, ...getPercentiles(data, percentiles)]
 
