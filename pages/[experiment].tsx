@@ -419,7 +419,7 @@ export async function getStaticProps(context: GetStaticPropsContext): Promise<Ge
     const data: ExperimentData[] = output.map(o => {
       const user = users.find(u => u.dbFile.fileId + ".json" == o.user)
       return {
-        nickname: user?.showTag ? user?.discord : "Anonymous",
+        nickname: (user?.showTag == "Yes") ? user?.discord : "Anonymous",
         affiliation: user?.affiliation || "Unaffiliated",
         stats: o.stats,
         ar: parseInt(user?.arXP ?? "0") + level[parseInt(user?.arLvl ?? "0")]
