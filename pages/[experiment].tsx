@@ -277,7 +277,7 @@ const colors = [
   Color({ r: 99, g: 255, b: 255 }),  // 5 light blue: kqm guhua
   Color({ r: 99, g: 138, b: 255 }),  // 6 dark blue: kqm leaks
   Color({ r: 177, g: 99, b: 255 }),  // 7 purple: kqm abyss
-  Color({ r: 255, g: 99, b: 216 }),  // 8 pink: ??
+  Color({ r: 255, g: 99, b: 216 }),  // 8 pink: TTDS mains
 ]
 
 function getColor(data: ExperimentData, randomColors: boolean, markedUser: string) {
@@ -302,6 +302,9 @@ function getColor(data: ExperimentData, randomColors: boolean, markedUser: strin
       break
     case "Genshin Optimizer":
       base = colors[2]
+      break
+    case "TTDS Mains":
+      base = colors[8]
       break
   }
 
