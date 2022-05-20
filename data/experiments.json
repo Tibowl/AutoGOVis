@@ -2,7 +2,6 @@
   {
     "name": "Kazuha EM vs. ER",
     "id": "kazuha-er-em",
-    "template": "kazuha-er-em",
     "y": "Elemental Mastery",
     "x": "Energy Recharge",
     "special": {
@@ -15,7 +14,6 @@
   {
     "name": "Venti Burst 14 ticks, The Stringless",
     "id": "venti-14-ticks",
-    "template": "venti-14-ticks",
     "y": "Total DMG (14 Swirl ticks)",
     "x": "Energy Recharge",
     "special": {
@@ -26,7 +24,6 @@
   {
       "name": "Tartaglia RQ (Vape), Polar Star (3 stacks)",
       "id": "childe-vape-rq-polar-3s",
-      "template": "childe-vape-rq-polar-3s",
       "y": "Burst: Skill DMG Ranged (Vape)",
       "x":"Energy Recharge",
       "oneShot": false
@@ -34,7 +31,6 @@
   {
     "name": "Rosaria Burst (Melt), Wavebreaker",
     "id": "rosaria-burst-melt-wavebreaker",
-    "template": "rosaria-burst-melt-wavebreaker",
     "y": "Ice Lance DoT (Melt)",
     "x": "Energy Recharge",
     "oneShot": false
@@ -42,14 +38,12 @@
   {
     "name": "Keqing CA, Mistsplitter",
     "id": "keqing-ca-mistsplitter",
-    "template": "keqing-ca-mistsplitter",
     "y": "Charged Attack DMG",
     "oneShot": true
   },
   {
     "name": "Xingqiu Burst, Sacrificial Sword",
     "id": "xingqiu-burst-sacsword",
-    "template": "xingqiu-burst-sacsword",
     "y": "Sword Rain DMG",
     "x": "Energy Recharge",
     "oneShot": false
@@ -57,7 +51,6 @@
   {
     "name": "Xiao Plunge, Primordial Jade Winged-Spear",
     "id": "xiao-plunge-jadespear",
-    "template": "xiao-plunge-jadespear",
     "y": "Plunge DMG",
     "x": "Energy Recharge",
     "oneShot": false
@@ -65,7 +58,6 @@
   {
     "name": "Itto CA, Redhorn Stonethresher",
     "id": "itto-ca-redhorn",
-    "template": "itto-ca-redhorn",
     "y": "Arataki Kesagiri Combo Slash DMG",
     "x": "Energy Recharge",
     "oneShot": false
@@ -73,7 +65,6 @@
   {
     "name": "Eula Burst, Song of Broken Pines",
     "id": "eula-burst-sobp",
-    "template": "eula-burst-sobp",
     "y": "Lightfall Sword Explosion DMG",
     "x": "Energy Recharge",
     "oneShot": false
@@ -81,7 +72,6 @@
   {
     "name": "Raiden Overvape, C0, The Catch",
     "id": "raiden-overvape-c0-the-catch",
-    "template": "raiden-overvape-c0-the-catch",
     "y": "Musou no Hitotachi Base DMG",
     "x": "Energy Recharge",
     "oneShot": false
@@ -89,7 +79,6 @@
   {
     "name": "Raiden Hypercarry, C3, Engulfing Lightning",
     "id": "raiden-hypercarry-c3-el",
-    "template": "raiden-hypercarry-c3-el",
     "y": "Musou no Hitotachi Base DMG",
     "x": "Energy Recharge",
     "oneShot": false
@@ -105,43 +94,43 @@
   {
     "name": "HuTao CA, Dragon's Bane (SR only)",
     "id": "hutao-ca-dbane-sronly",
-    "template": "hutao-ca-dbane-sronly",
     "y": "Charged Attack DMG",
+    "archived": true,
     "oneShot": true
   },
   {
     "name": "HuTao CA, Deathmatch (SR only)",
     "id": "hutao-ca-dm-sronly",
-    "template": "hutao-ca-dm-sronly",
     "y": "Charged Attack DMG",
+    "archived": true,
     "oneShot": true
   },
   {
     "name": "HuTao CA, Staff of Homa (SR only)",
     "id": "hutao-ca-homa-sronly",
-    "template": "hutao-ca-homa-sronly",
     "y": "Charged Attack DMG",
+    "archived": true,
     "oneShot": true
   },
   {
     "name": "HuTao CA, Dragon's Bane (All)",
     "id": "hutao-ca-dbane-all",
-    "template": "hutao-ca-dbane-all",
     "y": "Charged Attack DMG",
+    "archived": true,
     "oneShot": true
   },
   {
     "name": "HuTao CA, Deathmatch (All)",
     "id": "hutao-ca-dm-all",
-    "template": "hutao-ca-dm-all",
     "y": "Charged Attack DMG",
+    "archived": true,
     "oneShot": true
   },
   {
     "name": "HuTao CA, Staff of Homa (All)",
     "id": "hutao-ca-homa-all",
-    "template": "hutao-ca-homa-all",
     "y": "Charged Attack DMG",
+    "archived": true,
     "oneShot": true
   },
   {
@@ -149,20 +138,21 @@
     "id": "ganyu-bloom-melt-amos-bow",
     "template": "ganyu-bloom-melt-amos",
     "y": "Frostflake Arrow Bloom DMG (Melt)",
+    "archived": true,
     "oneShot": true
   },
   {
     "name": "Ganyu Bloom Melt, Prototype Crescent",
     "id": "ganyu-bloom-melt-prototype-crescent",
-    "template": "ganyu-bloom-melt-prototype-crescent",
     "y": "Frostflake Arrow Bloom DMG (Melt)",
+    "archived": true,
     "oneShot": true
   },
   {
     "name": "Ganyu Bloom Melt, Skyward Harp",
     "id": "ganyu-bloom-melt-skyward-harp",
-    "template": "ganyu-bloom-melt-skyward-harp",
     "y": "Frostflake Arrow Bloom DMG (Melt)",
+    "archived": true,
     "oneShot": true
   },
   {
@@ -171,22 +161,173 @@
     "template": "ganyu-ice-shard-amos",
     "y": "Ice Shard DMG",
     "x": "Energy Recharge",
+    "archived": true,
     "oneShot": false
   },
   {
     "name": "Ganyu Ice Shards vs. ER, Prototype Crescent",
     "id": "ganyu-ice-shard-prototype-crescent",
-    "template": "ganyu-ice-shard-prototype-crescent",
     "y": "Ice Shard DMG",
     "x": "Energy Recharge",
+    "archived": true,
     "oneShot": false
   },
   {
     "name": "Ganyu Ice Shards vs. ER, Skyward Harp",
     "id": "ganyu-ice-shard-skyward-harp",
-    "template": "ganyu-ice-shard-skyward-harp",
     "y": "Ice Shard DMG",
     "x": "Energy Recharge",
+    "archived": true,
+    "oneShot": false
+  },
+  {
+    "name": "Kazuha EM vs. ER - Artifacts at lv 20",
+    "note": "This is a variation that assumes artifacts at level 20.",
+    "id": "kazuha-er-em-20",
+    "template": "kazuha-er-em",
+    "outputFile": "assumption-20/kazuha-er-em",
+    "y": "Elemental Mastery",
+    "x": "Energy Recharge",
+    "special": {
+      "KQMS": [[166.12, 960.12], [206.9, 812.76]],
+      "1 Month of VV": [[110, 900.5701], [115, 898.5887], [120, 895.7215], [125, 889.7074], [130, 882.4108], [135, 872.5964], [140, 863.2019], [145, 854.0639], [150, 841.0099], [155, 824.2948], [160, 806.2969], [165, 789.815], [170, 772.7033], [175, 753.7969], [180, 736.4522], [185, 717.2196], [190, 699.9919], [195, 678.4748], [200, 649.101], [205, 618.522], [210, 589.7469], [215, 552.2141], [220, 499.9777], [225, 449.6209]],
+      "3 Months of VV": [[110, 1006.665], [115, 1006.199], [120, 1005.686], [125, 1004.661], [130, 1001.63], [135, 997.5277], [140, 992.8191], [145, 984.9171], [150, 977.1772], [155, 966.7105], [160, 953.6555], [165, 939.3186], [170, 924.3985], [175, 910.3646], [180, 891.5279], [185, 872.2025], [190, 855.9536], [195, 834.762], [200, 816.251], [205, 795.2703], [210, 773.7999], [215, 750.651], [220, 721.0679], [225, 687.5449]]
+    },
+    "archived": true,
+    "oneShot": false
+  },
+  {
+    "name": "Xiangling Pyronado DMG vs. ER - Artifacts at lv 20",
+    "note": "This is a variation that assumes artifacts at level 20.",
+    "id": "xiangling-pyronado-er-20",
+    "template": "xiangling-pyronado-the-catch-er",
+    "outputFile": "assumption-20/xiangling-pyronado-the-catch-er",
+    "y": "Pyronado DMG (Vape)",
+    "x": "Energy Recharge",
+    "archived": true,
+    "oneShot": false
+  },
+  {
+    "name": "HuTao CA, Dragon's Bane (SR only) - Artifacts at lv 20",
+    "note": "This is a variation that assumes artifacts at level 20.",
+    "id": "hutao-ca-dbane-sronly-20",
+    "template": "hutao-ca-dbane-sronly",
+    "outputFile": "assumption-20/hutao-ca-dbane-sronly",
+    "y": "Charged Attack DMG",
+    "archived": true,
+    "oneShot": true
+  },
+  {
+    "name": "HuTao CA, Deathmatch (SR only) - Artifacts at lv 20",
+    "note": "This is a variation that assumes artifacts at level 20.",
+    "id": "hutao-ca-dm-sronly-20",
+    "template": "hutao-ca-dm-sronly",
+    "outputFile": "assumption-20/hutao-ca-dm-sronly",
+    "y": "Charged Attack DMG",
+    "archived": true,
+    "oneShot": true
+  },
+  {
+    "name": "HuTao CA, Staff of Homa (SR only) - Artifacts at lv 20",
+    "note": "This is a variation that assumes artifacts at level 20.",
+    "id": "hutao-ca-homa-sronly-20",
+    "template": "hutao-ca-homa-sronly",
+    "outputFile": "assumption-20/hutao-ca-homa-sronly",
+    "y": "Charged Attack DMG",
+    "archived": true,
+    "oneShot": true
+  },
+  {
+    "name": "HuTao CA, Dragon's Bane (All) - Artifacts at lv 20",
+    "note": "This is a variation that assumes artifacts at level 20.",
+    "id": "hutao-ca-dbane-all-20",
+    "template": "hutao-ca-dbane-all",
+    "outputFile": "assumption-20/hutao-ca-dbane-all",
+    "y": "Charged Attack DMG",
+    "archived": true,
+    "oneShot": true
+  },
+  {
+    "name": "HuTao CA, Deathmatch (All) - Artifacts at lv 20",
+    "note": "This is a variation that assumes artifacts at level 20.",
+    "id": "hutao-ca-dm-all-20",
+    "template": "hutao-ca-dm-all",
+    "outputFile": "assumption-20/hutao-ca-dm-all",
+    "y": "Charged Attack DMG",
+    "archived": true,
+    "oneShot": true
+  },
+  {
+    "name": "HuTao CA, Staff of Homa (All) - Artifacts at lv 20",
+    "note": "This is a variation that assumes artifacts at level 20.",
+    "id": "hutao-ca-homa-all-20",
+    "template": "hutao-ca-homa-all",
+    "outputFile": "assumption-20/hutao-ca-homa-all",
+    "y": "Charged Attack DMG",
+    "archived": true,
+    "oneShot": true
+  },
+  {
+    "name": "Ganyu Bloom Melt, Amos' Bow - Artifacts at lv 20",
+    "note": "This is a variation that assumes artifacts at level 20.",
+    "id": "ganyu-bloom-melt-amos-bow-20",
+    "template": "ganyu-bloom-melt-amos",
+    "outputFile": "assumption-20/ganyu-bloom-melt-amos",
+    "y": "Frostflake Arrow Bloom DMG (Melt)",
+    "archived": true,
+    "oneShot": true
+  },
+  {
+    "name": "Ganyu Bloom Melt, Prototype Crescent - Artifacts at lv 20",
+    "note": "This is a variation that assumes artifacts at level 20.",
+    "id": "ganyu-bloom-melt-prototype-crescent-20",
+    "template": "ganyu-bloom-melt-prototype-crescent",
+    "outputFile": "assumption-20/ganyu-bloom-melt-prototype-crescent",
+    "y": "Frostflake Arrow Bloom DMG (Melt)",
+    "archived": true,
+    "oneShot": true
+  },
+  {
+    "name": "Ganyu Bloom Melt, Skyward Harp - Artifacts at lv 20",
+    "note": "This is a variation that assumes artifacts at level 20.",
+    "id": "ganyu-bloom-melt-skyward-harp-20",
+    "template": "ganyu-bloom-melt-skyward-harp",
+    "outputFile": "assumption-20/ganyu-bloom-melt-skyward-harp",
+    "y": "Frostflake Arrow Bloom DMG (Melt)",
+    "archived": true,
+    "oneShot": true
+  },
+  {
+    "name": "Ganyu Ice Shards vs. ER, Amos' Bow - Artifacts at lv 20",
+    "note": "This is a variation that assumes artifacts at level 20.",
+    "id": "ganyu-ice-shard-amos-bow-20",
+    "template": "ganyu-ice-shard-amos",
+    "outputFile": "assumption-20/ganyu-ice-shard-amos",
+    "y": "Ice Shard DMG",
+    "x": "Energy Recharge",
+    "archived": true,
+    "oneShot": false
+  },
+  {
+    "name": "Ganyu Ice Shards vs. ER, Prototype Crescent - Artifacts at lv 20",
+    "note": "This is a variation that assumes artifacts at level 20.",
+    "id": "ganyu-ice-shard-prototype-crescent-20",
+    "template": "ganyu-ice-shard-prototype-crescent",
+    "outputFile": "assumption-20/ganyu-ice-shard-prototype-crescent",
+    "y": "Ice Shard DMG",
+    "x": "Energy Recharge",
+    "archived": true,
+    "oneShot": false
+  },
+  {
+    "name": "Ganyu Ice Shards vs. ER, Skyward Harp - Artifacts at lv 20",
+    "note": "This is a variation that assumes artifacts at level 20.",
+    "id": "ganyu-ice-shard-skyward-harp-20",
+    "template": "ganyu-ice-shard-skyward-harp",
+    "outputFile": "assumption-20/ganyu-ice-shard-skyward-harp",
+    "y": "Ice Shard DMG",
+    "x": "Energy Recharge",
+    "archived": true,
     "oneShot": false
   }
 ]

@@ -25,7 +25,7 @@ export default function MainPage({ location, experiments }: Props & { location: 
       The GUOBA Project
     </h1>
 
-    <h3 className="text-xl font-bold pt-1" id="about">Submitting data</h3>
+    <h3 className="text-2xl font-bold pt-1" id="about">Submitting data</h3>
     <p>
       Submit your own data <FormattedLink href="https://forms.gle/Gv8rd5XEjH3GzhE36"
             target="form">here</FormattedLink>.
@@ -39,26 +39,33 @@ export default function MainPage({ location, experiments }: Props & { location: 
       target="go-setting">Settings</FormattedLink> page under <i>Database Download</i>.
     </p>
 
-    <h3 className="text-xl font-bold pt-1" id="about">About &lsquo;The GUOBA Project&rsquo;</h3>
+    <h3 className="text-2xl font-bold pt-1" id="about">About &lsquo;The GUOBA Project&rsquo;</h3>
     <p>This is a project to map out how the artifacts of players perform to improve mathematical models/artifact standards for calculations.
       The problem with simulating artifacts is that it&apos;s hard to verify if results that come from them are correct. Players have different
       strategies when selecting which domain to farm/which artifact to upgrade/which to trash. For example, the first experiment we&apos;ll do with
       this data is map out ER vs EM for a four piece Viridescent Venerer set.</p>
 
-    <h3 className="text-xl font-bold pt-1" id="experiments">List of Experiments</h3>
-    <ul>
-      {experiments.map(experiment => (<li key={experiment.name}>
-        -{" "}
-        <FormattedLink href={`/${experiment.id}`} location={location} className="font-semibold text-l">
-          {experiment.name}
-        </FormattedLink>
-      </li>))}
-    </ul>
+    <h3 className="text-2xl font-bold pt-1" id="experiments">List of Experiments</h3>
+    <List experiments={experiments.filter(x => !x.archived)} location={location} />
+
+    <details>
+        <summary className="text-xl font-bold pt-1" id="archived-experiments">Archived Experiments</summary>
+        <List experiments={experiments.filter(x => x.archived)} location={location} />
+    </details>
 
     </Main>
   )
 }
-
+function List({ experiments, location }: { experiments: ExperimentMeta[], location: string}) {
+  return <ul>
+    {experiments.map(experiment => (<li key={experiment.name}>
+      -{" "}
+      <FormattedLink href={`/${experiment.id}`} location={location} className="font-semibold text-l">
+        {experiment.name}
+      </FormattedLink>
+    </li>))}
+  </ul>
+}
 export async function getStaticProps(context: GetStaticPropsContext): Promise<GetStaticPropsResult<Props>> {
   const experiments = JSON.parse((await readFile("./data/experiments.json")).toString())
 

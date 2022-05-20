@@ -1,7 +1,10 @@
 export interface ExperimentMeta {
   name: string
+  note: string
   id: string
-  template: string
+  template?: string
+  archived?: true
+  outputFile?: string
   oneShot: boolean
   x?: string
   y?: string

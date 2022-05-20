@@ -45,9 +45,9 @@ export default function Experiment({ location, meta, data, next, prev }: Props &
 
     let shownData = data
     if (showPercentiles && !showBoth)
-      shownData = [...data.filter(x => x.nickname == markedUser), ...getPercentiles(data, percentiles)]
+      shownData = [...data.filter(x => x.nickname == markedUser), ...getPercentiles(data, meta, percentiles)]
     else if (showBoth)
-      shownData = [...data, ...getPercentiles(data, percentiles)]
+      shownData = [...data, ...getPercentiles(data, meta, percentiles)]
 
     return (
       <Main>
@@ -82,8 +82,18 @@ export default function Experiment({ location, meta, data, next, prev }: Props &
           </div>
         </div>
 
+        {meta.archived && <>
+            <h3 className="text-4xl font-bold pt-1 text-red-700 dark:text-red-400" id="archived">Archived</h3>
+            <p>This template has been archived and will most likely no longer receive updates in the future.</p>
+        </>}
+
+        {meta.note && <>
+            <h3 className="text-2xl font-bold pt-1" id="archived">Note</h3>
+            <p>{meta.note}</p>
+        </>}
+
         <h3 className="text-lg font-bold pt-1" id="template">Template</h3>
-        <p>The template with assumptions for this experiment can be found on <FormattedLink href={`https://github.com/Tibowl/AutoGO/blob/master/templates/${meta.template}.json`} target="github">GitHub</FormattedLink>.</p>
+        <p>The template with assumptions for this experiment can be found on <FormattedLink href={`https://github.com/Tibowl/AutoGO/blob/master/templates/${meta.template ?? meta.id}.json`} target="github">GitHub</FormattedLink>.</p>
 
         <h3 className="text-lg font-bold pt-1" id="results">Results</h3>
         <CheckboxInput label="Show lines" set={setShowLines} value={showLines} />
@@ -123,7 +133,7 @@ function UserGraph({ meta, data, showLines, randomColors, showSpecialData, marke
 
   datasets.push(...data.map(d => ({
     label: d.nickname,
-    data: meta.oneShot ? [{ x: d.ar, y: Math.max(...d.stats.map(([_x, y]) => y)) }] : d.stats.map(([x, y]) => ({ x, y })),
+    data: meta.oneShot && d.ar > 0 ? [{ x: d.ar, y: Math.max(...d.stats.map(([_x, y]) => y)) }] : d.stats.map(([x, y]) => ({ x, y })),
     showLine: showLines,
     ...getColor(d, randomColors, markedUser)
   })).sort((a, b) => a.label.localeCompare(b.label)))
@@ -304,16 +314,19 @@ function NumberInputList({ value, set, label, defaultValue, min, max }: { value:
 }
 
 
-function getPercentiles(data: ExperimentData[], percents: number[]): ExperimentData[] {
+function getPercentiles(data: ExperimentData[], meta: ExperimentMeta, percents: number[]): ExperimentData[] {
   const percentiles: {
     percentile: number,
     stats: [number, number][]
   }[] = percents.map(i => ({ percentile: i, stats: [] }))
 
-  const dn = data.flatMap(x => x.stats.map(x => x[0])).filter((v, i, a) => a.indexOf(v) == i).sort()
+  let xValues = data.flatMap(x => x.stats.map(x => x[0])).filter((v, i, a) => a.indexOf(v) == i).sort()
 
-  dn.forEach(x => {
-    const values = data.map(u => u.stats.find(s => s[0] >= x)).sort((a, b) => (b?.[1] ?? 0) - (a?.[1] ?? 0))
+  if (meta.oneShot)
+    xValues = [Math.min(...data.map(x => x.ar)), Math.max(...data.map(x => x.ar))]
+
+  xValues.forEach(x => {
+    const values = data.map(u => u.stats.find(s => s[0] >= x || meta.oneShot)).sort((a, b) => (b?.[1] ?? 0) - (a?.[1] ?? 0))
 
     percentiles.forEach(p => {
       const value = values[Math.floor(values.length * p.percentile / 100)]
@@ -415,7 +428,7 @@ function applyColor(base: Color, randomness1: number, randomness2: number, rando
 function exportCSV(meta: ExperimentMeta, data: ExperimentData[]) {
   const file = {
     mime: "text/plain",
-    filename: `${meta.template}.csv`,
+    filename: `${meta.outputFile?.replace(/\//g, "-") ?? meta.template ?? meta.id}.csv`,
     contents: "user,affiliation,ar,x,y\n" +
       data.flatMap(u => u.stats.map(d => `${u.nickname.replace(/,/g, "")},${u.affiliation.replace(/,/g, "")},${u.ar},${d.join(",")}`)).join("\n"),
   }
@@ -467,7 +480,7 @@ export async function getStaticProps(context: GetStaticPropsContext): Promise<Ge
     const next = experiments[index + 1] ?? null
     const prev = experiments[index - 1] ?? null
 
-    const output = JSON.parse((await readFile(`./data/output/${meta.template}.json`)).toString()) as {user: string, stats: [number, number][]}[]
+    const output = JSON.parse((await readFile(`./data/output/${meta.outputFile ?? meta.template ?? meta.id}.json`)).toString()) as {user: string, stats: [number, number][]}[]
     let i = 0
     const data: ExperimentData[] = output.map(o => {
       const user = users.find(u => u.dbFile.fileId + ".json" == o.user)
