@@ -24,9 +24,9 @@
     "oneShot": false
   },
   {
-      "name": "Tartaglia RQ (Vape), Polar Star (2 stacks)",
-      "id": "childe-vape-rq-polar2s",
-      "template": "childe-vape-rq-polar2s",
+      "name": "Tartaglia RQ (Vape), Polar Star (3 stacks)",
+      "id": "childe-vape-rq-polar-3s",
+      "template": "childe-vape-rq-polar-3s",
       "y": "Burst: Skill DMG Ranged (Vape)",
       "x":"Energy Recharge",
       "oneShot": false
