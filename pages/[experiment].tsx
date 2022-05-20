@@ -377,7 +377,7 @@ function getColor(data: ExperimentData, randomColors: boolean, markedUser: strin
     // unused Color({ r: 99, g: 255, b: 138 }): green2
   }
 
-  if (data.nickname == "Artesians#0002") {
+  if (data.nickname == "Ghosted#9310") {
     base = Color("#423B17").lighten(.4)
     randomColors = false
   }
