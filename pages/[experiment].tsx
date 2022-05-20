@@ -41,7 +41,7 @@ export default function Experiment({ location, meta, data, next, prev }: Props &
     const [showBoth, setShowBoth] = useState(false)
     const [markedUser, setMarkedUser] = useState(UNSELECTED)
     const [minimumX, setMinimumX] = useState(0)
-    const [percentiles, setPercentiles] = useState([1, 25, 50, 75, 99])
+    const [percentiles, setPercentiles] = useState([5, 25, 50, 75, 95])
 
     let shownData = data
     if (showPercentiles && !showBoth)
@@ -335,8 +335,10 @@ function getPercentiles(data: ExperimentData[], percents: number[]): ExperimentD
 
 function getColor(data: ExperimentData, randomColors: boolean, markedUser: string) {
   if (data.nickname == "KQMS") return {
-    borderColor: "#6F3995",
-    backgroundColor: "#A474C5",
+    borderColor: "#9b4fd1",
+    backgroundColor: "#d9b8ef",
+    borderWidth: data.nickname == markedUser ? 4 : undefined,
+    segment: { borderColor: "#9b4fd1" }
   }
 
   let base = Color({ r: 201, g: 201, b: 201 }) // gray
@@ -394,14 +396,14 @@ function getColor(data: ExperimentData, randomColors: boolean, markedUser: strin
 
 
   return {
-    backgroundColor: getColorIndex(base, a, b, c, 0.6 * mult),
-    borderColor: getColorIndex(base, a, b, c, 1.2 * mult),
+    backgroundColor: applyColor(base, a, b, c, 0.6 * mult),
+    borderColor: applyColor(base, a, b, c, 1.2 * mult),
     borderWidth: data.nickname == markedUser ? 5 : undefined,
-    segment: { borderColor: getColorIndex(base, a, b, c, .25 * mult) }
+    segment: { borderColor: applyColor(base, a, b, c, .25 * mult) }
   }
 }
 
-function getColorIndex(base: Color, randomness1: number, randomness2: number, randomness3: number, alpha: number) {
+function applyColor(base: Color, randomness1: number, randomness2: number, randomness3: number, alpha: number) {
   return base
     .lighten(randomness1)
     .desaturate(randomness2)
