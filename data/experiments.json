@@ -1,6 +1,6 @@
 [
   {
-    "name": "Kazuha EM vs. ER",
+    "name": "Kazuha EM vs. ER, Iron Sting (4p VV)",
     "id": "kazuha-er-em",
     "y": "Elemental Mastery",
     "x": "Energy Recharge",
@@ -22,11 +22,40 @@
     "oneShot": false
   },
   {
-      "name": "Tartaglia RQ (Vape), Polar Star (3 stacks)",
-      "id": "childe-vape-rq-polar-3s",
-      "y": "Burst: Skill DMG Ranged (Vape)",
-      "x":"Energy Recharge",
-      "oneShot": false
+    "name": "Bennett Burst vs. ER, Prototype Rancour (4p Noblesse)",
+    "id": "bennett-4no-burst-er",
+    "template": "bennett-4no",
+    "y": "Burst DMG (Vape)",
+    "x": "Energy Recharge",
+    "oneShot": false
+  },
+  {
+    "name": "Diona Healing vs. ER, Sacrificial Bow",
+    "id": "diona-healing-er",
+    "template": "diona-healing",
+    "y": "Burst Healing DoT",
+    "x": "Energy Recharge",
+    "oneShot": false
+  },
+  {
+    "name": "Kokomi N1 vs. ER, Prototype Amber (4p OHC)",
+    "id": "kokomi-hyper",
+    "y": "1-Hit DMG",
+    "x": "Energy Recharge",
+    "oneShot": false
+  },
+  {
+    "name": "Zhongli HP (Black Tassel)",
+    "id": "zhongli-hp",
+    "y": "Max HP",
+    "oneShot": true
+  },
+  {
+    "name": "Tartaglia RQ (Vape), Polar Star (3 stacks)",
+    "id": "childe-vape-rq-polar-3s",
+    "y": "Burst: Skill DMG Ranged (Vape)",
+    "x":"Energy Recharge",
+    "oneShot": false
   },
   {
     "name": "Rosaria Burst (Melt), Wavebreaker",
