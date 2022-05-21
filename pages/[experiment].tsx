@@ -377,11 +377,6 @@ function getColor(data: ExperimentData, randomColors: boolean, markedUser: strin
     // unused Color({ r: 99, g: 255, b: 138 }): green2
   }
 
-  if (data.nickname == "Ghosted#9310") {
-    base = Color("#423B17").lighten(.4)
-    randomColors = false
-  }
-
   let mult = .2
 
   if (markedUser == UNSELECTED) {
@@ -488,7 +483,7 @@ export async function getStaticProps(context: GetStaticPropsContext): Promise<Ge
         nickname: (user?.showTag == "Yes") ? user?.discord : `Anonymous #${++i}`,
         affiliation: user?.affiliation || "Unaffiliated",
         stats: o.stats,
-        ar: parseInt(user?.arXP ?? "0") + level[parseInt(user?.arLvl ?? "0")]
+        ar: parseInt(user?.arLvl == "60" ? "0" : user?.arXP ?? "0") + level[parseInt(user?.arLvl ?? "0")]
       }
     }).sort((a, b) => a.nickname.localeCompare(b.nickname))
 
