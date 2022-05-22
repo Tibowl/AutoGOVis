@@ -191,7 +191,9 @@ function UserGraph({ meta, data, showLines, randomColors, showSpecialData, marke
 }
 
 function Leaderboard({ data, meta, markedUser, minimumX }: {data: ExperimentData[], meta: ExperimentMeta, markedUser: string, minimumX: number}) {
-  return <table className={`table-auto w-full ${styles.table} my-2 sm:text-base text-sm`}>
+  const [expanded, setExpanded] = useState(false)
+
+  return <table className={`table-auto w-full ${styles.table} ${expanded || data.length <= 10 ? "" : "cursor-pointer"} my-2 sm:text-base text-sm`} onClick={(e) => setExpanded(true)}>
   <thead>
     <tr className="divide-x divide-gray-200 dark:divide-gray-500">
       <th>#</th>
@@ -219,6 +221,7 @@ function Leaderboard({ data, meta, markedUser, minimumX }: {data: ExperimentData
 
         return statB - statA
       })
+      .filter((_, i, arr) => expanded ? true : (i < 10))
       .map((c, i) => <tr className={`pr-1 divide-x divide-gray-200 dark:divide-gray-500 ${markedUser == c.nickname ? "font-bold" : ""}`} key={i}>
         <td>#{i+1}</td>
         <td>{c.nickname}</td>
@@ -227,6 +230,9 @@ function Leaderboard({ data, meta, markedUser, minimumX }: {data: ExperimentData
         {!meta.oneShot && <td>{c.bestStats?.[0]?.toLocaleString() ?? "---"}</td>}
         <td>{c.bestStats?.[1]?.toLocaleString() ?? "---"}</td>
       </tr>)}
+      {!expanded && data.length > 10 && <tr className="pr-1 cursor-pointer text-blue-700 dark:text-blue-300 hover:text-blue-400 dark:hover:text-blue-400 no-underline transition-all duration-200 font-semibold">
+          <td colSpan={meta.oneShot ? 5 : 6} style={({ textAlign: "center" })}>Click to expand...</td>
+        </tr>}
   </tbody>
 </table>
 }
