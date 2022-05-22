@@ -35,9 +35,9 @@ export default function Experiment({ location, meta, data, next, prev }: Props &
     const desc = `Visualization for the ${meta.name} experiment for the GUOBA project. The GUOBA Project intends to map out how the artifacts of players perform to improve mathematical models/artifact standards for calculations such as the KQMS.`
 
     const [showLines, setShowLines] = useState(true)
-    const [randomColors, setRandomColors] = useState(true)
+    const [randomColors, setRandomColors] = useState(false)
     const [showSpecialData, setShowSpecialData] = useState(true)
-    const [showPercentiles, setShowPercentiles] = useState(false)
+    const [showPercentiles, setShowPercentiles] = useState(true)
     const [showBoth, setShowBoth] = useState(false)
     const [markedUser, setMarkedUser] = useState(UNSELECTED)
     const [minimumX, setMinimumX] = useState(0)
