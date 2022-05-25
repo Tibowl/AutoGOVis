@@ -485,11 +485,13 @@ export async function getStaticProps(context: GetStaticPropsContext): Promise<Ge
     let i = 0
     const data: ExperimentData[] = output.map(o => {
       const user = users.find(u => u.dbFile.fileId + ".json" == o.user)
+      const xp = parseInt(user?.arLvl == "60" ? "0" : user?.arXP ?? "0")
+      const levelXp = level[parseInt(user?.arLvl ?? "0")]
       return {
         nickname: (user?.showTag == "Yes") ? user?.discord : `Anonymous #${++i}`,
         affiliation: user?.affiliation || "Unaffiliated",
         stats: o.stats,
-        ar: parseInt(user?.arLvl == "60" ? "0" : user?.arXP ?? "0") + level[parseInt(user?.arLvl ?? "0")]
+        ar: xp > levelXp ? xp : (xp + levelXp)
       }
     }).sort((a, b) => a.nickname.localeCompare(b.nickname))
 
