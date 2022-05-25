@@ -22,6 +22,14 @@
     "oneShot": false
   },
   {
+    "name": "Ayaka Burst vs. ER, Mistsplitter Reforged (4p Blizzard Strayer)",
+    "id": "ayaka-mist-4bs-burst-er",
+    "template": "ayaka-burst-mist",
+    "y": "Cutting DMG",
+    "x": "Energy Recharge",
+    "oneShot": false
+  },
+  {
     "name": "Bennett Burst vs. ER, Prototype Rancour (4p Noblesse)",
     "id": "bennett-4no-burst-er",
     "template": "bennett-4no",
