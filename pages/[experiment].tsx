@@ -31,6 +31,9 @@ interface Props {
 }
 
 const UNSELECTED = "Select..."
+const pood = [
+  "AnonAnon#0672"
+]
 export default function Experiment({ location, meta, data, next, prev }: Props & { location: string }) {
     const desc = `Visualization for the ${meta.name} experiment for the GUOBA project. The GUOBA Project intends to map out how the artifacts of players perform to improve mathematical models/artifact standards for calculations such as the KQMS.`
 
@@ -381,6 +384,11 @@ function getColor(data: ExperimentData, randomColors: boolean, markedUser: strin
       base = Color({ r: 255, g: 99, b: 216 }) // pink
       break
     // unused Color({ r: 99, g: 255, b: 138 }): green2
+  }
+
+  if (pood.includes(data.nickname)) {
+    base = Color("#423B17").lighten(.4)
+    randomColors = false
   }
 
   let mult = .2
