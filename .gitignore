@@ -38,3 +38,4 @@ yarn-error.log*
 
 data/output/
 data/users.json
+data/ignored.json

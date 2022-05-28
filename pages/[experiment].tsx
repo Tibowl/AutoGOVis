@@ -27,14 +27,12 @@ interface Props {
     next?: ExperimentMeta,
     meta: ExperimentMeta,
     prev?: ExperimentMeta,
-    data: ExperimentData[]
+    data: ExperimentData[],
+    ignored: string[]
 }
 
 const UNSELECTED = "Select..."
-const ignored = [
-  "AnonAnon#0672"
-]
-export default function Experiment({ location, meta, data, next, prev }: Props & { location: string }) {
+export default function Experiment({ location, meta, data, next, prev, ignored }: Props & { location: string }) {
     const desc = `Visualization for the ${meta.name} experiment for the GUOBA project. The GUOBA Project intends to map out how the artifacts of players perform to improve mathematical models/artifact standards for calculations such as the KQMS.`
 
     const [showLines, setShowLines] = useState(true)
@@ -48,9 +46,9 @@ export default function Experiment({ location, meta, data, next, prev }: Props &
 
     let shownData = data
     if (showPercentiles && !showBoth)
-      shownData = [...data.filter(x => x.nickname == markedUser), ...getPercentiles(data, meta, percentiles)]
+      shownData = [...data.filter(x => x.nickname == markedUser), ...getPercentiles(data, meta, percentiles, ignored)]
     else if (showBoth)
-      shownData = [...data, ...getPercentiles(data, meta, percentiles)]
+      shownData = [...data, ...getPercentiles(data, meta, percentiles, ignored)]
 
     return (
       <Main>
@@ -111,11 +109,11 @@ export default function Experiment({ location, meta, data, next, prev }: Props &
           ...(showPercentiles ? ["Percentiles"] : []),
           ...data.map(x => x.nickname).sort()
         ]} />
-        <UserGraph data={shownData} showLines={showLines} meta={meta} randomColors={randomColors} markedUser={markedUser} showSpecialData={showSpecialData} />
+        <UserGraph data={shownData} showLines={showLines} meta={meta} randomColors={randomColors} markedUser={markedUser} showSpecialData={showSpecialData} ignored={ignored} />
         <button className="bg-blue-600 disabled:bg-gray-900 text-slate-50 disabled:text-slate-400 w-fit px-3 py-1 text-center rounded-lg mt-2 cursor-pointer float-right" onClick={() => exportCSV(meta, data)}>Export to .csv</button>
         {!meta.oneShot && <NumberInput label={`Minimum ${meta.x}`} set={setMinimumX} value={minimumX} />}
         <div className="clear-both"></div>
-        <Leaderboard data={data} markedUser={markedUser} meta={meta} minimumX={minimumX} />
+        <Leaderboard data={data} markedUser={markedUser} meta={meta} minimumX={minimumX} ignored={ignored} />
 
         <h3 className="text-lg font-bold pt-1" id="disclaimer">Disclaimer</h3>
         <p>This data is gathered from the GUOBA project. Submit your own data <FormattedLink
@@ -126,10 +124,10 @@ export default function Experiment({ location, meta, data, next, prev }: Props &
     )
 }
 
-function UserGraph({ meta, data, showLines, randomColors, showSpecialData, markedUser }: { meta: ExperimentMeta, data: ExperimentData[], showLines: boolean, randomColors: boolean, showSpecialData: boolean, markedUser: string }) {
+function UserGraph({ meta, data, showLines, randomColors, showSpecialData, markedUser, ignored }: { meta: ExperimentMeta, data: ExperimentData[], showLines: boolean, randomColors: boolean, showSpecialData: boolean, markedUser: string, ignored: string[] }) {
   const datasets = (meta.special && showSpecialData) ? Object.entries(meta.special).map(([label, data]) => ({
     label,
-    ...getColor({ affiliation: "dn", "ar": -1, "nickname": label, "stats": [] }, randomColors, markedUser),
+    ...getColor({ affiliation: "dn", "ar": -1, "nickname": label, "stats": [] }, randomColors, markedUser, ignored),
     showLine: true,
     data: data.map(([x, y]) => ({ x, y }))
   })) : []
@@ -138,7 +136,7 @@ function UserGraph({ meta, data, showLines, randomColors, showSpecialData, marke
     label: d.nickname,
     data: meta.oneShot && d.ar > 0 ? [{ x: d.ar, y: Math.max(...d.stats.map(([_x, y]) => y)) }] : d.stats.map(([x, y]) => ({ x, y })),
     showLine: showLines,
-    ...getColor(d, randomColors, markedUser)
+    ...getColor(d, randomColors, markedUser, ignored)
   })).sort((a, b) => a.label.localeCompare(b.label)))
 
   return <div className="w-full bg-slate-800 rounded-xl p-1 my-2 md:my-0 text-white col-start-2">
@@ -193,7 +191,7 @@ function UserGraph({ meta, data, showLines, randomColors, showSpecialData, marke
   </div>
 }
 
-function Leaderboard({ data, meta, markedUser, minimumX }: {data: ExperimentData[], meta: ExperimentMeta, markedUser: string, minimumX: number}) {
+function Leaderboard({ data, meta, markedUser, minimumX, ignored }: {data: ExperimentData[], meta: ExperimentMeta, markedUser: string, minimumX: number, ignored: string[]}) {
   const [expanded, setExpanded] = useState(false)
 
   return <table className={`table-auto w-full ${styles.table} ${expanded || data.length <= 10 ? "" : "cursor-pointer"} my-2 sm:text-base text-sm`} onClick={(e) => setExpanded(true)}>
@@ -326,7 +324,7 @@ function NumberInputList({ value, set, label, defaultValue, min, max }: { value:
 }
 
 
-function getPercentiles(data: ExperimentData[], meta: ExperimentMeta, percents: number[]): ExperimentData[] {
+function getPercentiles(data: ExperimentData[], meta: ExperimentMeta, percents: number[], ignored: string[]): ExperimentData[] {
   const percentiles: {
     percentile: number,
     stats: [number, number][]
@@ -358,7 +356,7 @@ function getPercentiles(data: ExperimentData[], meta: ExperimentMeta, percents: 
 }
 
 
-function getColor(data: ExperimentData, randomColors: boolean, markedUser: string) {
+function getColor(data: ExperimentData, randomColors: boolean, markedUser: string, ignored: string[]) {
   if (data.nickname == "KQMS") return {
     borderColor: "#9b4fd1",
     backgroundColor: "#d9b8ef",
@@ -464,6 +462,7 @@ export async function getStaticProps(context: GetStaticPropsContext): Promise<Ge
   try {
     const experimentName = context.params?.experiment
     const experiments = JSON.parse((await readFile("./data/experiments.json")).toString()) as ExperimentMeta[] | undefined
+    const ignored = JSON.parse((await readFile("./data/ignored.json")).toString()) as string[] | undefined
     const users = JSON.parse((await readFile("./data/users.json")).toString()) as {
       "responseId": string,
       "createTime": string,
@@ -511,7 +510,8 @@ export async function getStaticProps(context: GetStaticPropsContext): Promise<Ge
         prev,
         next,
         meta,
-        data
+        data,
+        ignored: ignored ? ignored : []
       },
       revalidate: 60 * 60 * 1
     }
