@@ -330,7 +330,8 @@ function getPercentiles(data: ExperimentData[], meta: ExperimentMeta, percents: 
     stats: [number, number][]
   }[] = percents.map(i => ({ percentile: i, stats: [] }))
 
-  let xValues = data.flatMap(x => x.stats.map(x => x[0])).filter((v, i, a) => a.indexOf(v) == i).sort()
+  let xValues = data.flatMap(x => x.stats.map(x => x[0])).filter((v, i, a) => a.indexOf(v) == i).sort((a, b) => a - b)
+  console.log(xValues)
 
   if (meta.oneShot)
     xValues = [Math.min(...data.map(x => x.ar)), Math.max(...data.map(x => x.ar))]
