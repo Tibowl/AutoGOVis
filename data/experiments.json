@@ -33,6 +33,13 @@
     "oneShot": false
   },
   {
+    "name": "Hu Tao Burst CRIT Hit vs. CRIT Rate",
+    "id": "hutao-burst-crit-vs-rate",
+    "y": "Spirit Soother: Low HP Skill DMG (Vape, CRIT)",
+    "x": "CRIT Rate",
+    "oneShot": false
+  },
+  {
     "name": "Bennett Burst vs. ER, Prototype Rancour (4p Noblesse)",
     "id": "bennett-4no-burst-er",
     "template": "bennett-4no",
@@ -140,6 +147,7 @@
   {
     "name": "CRIT DMG vs. CRIT Rate",
     "id": "crit-dmg-vs-crit-rate",
+    "note": "Includes 5% Base CRIT Rate and 50% Base CRIT DMG.",
     "y": "CRIT DMG",
     "x": "CRIT Rate",
     "oneShot": false
