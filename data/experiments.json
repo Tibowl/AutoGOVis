@@ -138,6 +138,13 @@
     "oneShot": false
   },
   {
+    "name": "CRIT DMG vs. CRIT Rate",
+    "id": "crit-dmg-vs-crit-rate",
+    "y": "CRIT DMG",
+    "x": "CRIT Rate",
+    "oneShot": false
+  },
+  {
     "name": "HuTao CA, Dragon's Bane (SR only)",
     "id": "hutao-ca-dbane-sronly",
     "y": "Charged Attack DMG",
