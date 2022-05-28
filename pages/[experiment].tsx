@@ -31,7 +31,7 @@ interface Props {
 }
 
 const UNSELECTED = "Select..."
-const pood = [
+const ignored = [
   "AnonAnon#0672"
 ]
 export default function Experiment({ location, meta, data, next, prev }: Props & { location: string }) {
@@ -216,6 +216,9 @@ function Leaderboard({ data, meta, markedUser, minimumX }: {data: ExperimentData
         bestStats: c.stats.find(x => meta.oneShot || x[0] >= minimumX)
       }))
       .sort((a, b) => {
+        if (ignored.includes(a?.nickname)) return 1
+        if (ignored.includes(b?.nickname)) return -1
+
         const statA = a?.bestStats?.[1]
         if (statA == undefined) return 1
 
@@ -225,8 +228,8 @@ function Leaderboard({ data, meta, markedUser, minimumX }: {data: ExperimentData
         return statB - statA
       })
       .filter((_, i, arr) => expanded ? true : (i < 10))
-      .map((c, i) => <tr className={`pr-1 divide-x divide-gray-200 dark:divide-gray-500 ${markedUser == c.nickname ? "font-bold" : ""}`} key={i}>
-        <td>#{i+1}</td>
+      .map((c, i) => <tr className={`pr-1 divide-x divide-gray-200 dark:divide-gray-500 ${markedUser == c.nickname ? "font-bold" : ""} ${ignored.includes(c.nickname) ? "opacity-90 text-yellow-800" : ""}`} key={i}>
+        <td>{ignored.includes(c.nickname) ? "Last" : `#${i+1}`}</td>
         <td>{c.nickname}</td>
         <td>{c.ar.toLocaleString()}</td>
         <td>{c.affiliation}</td>
@@ -338,7 +341,7 @@ function getPercentiles(data: ExperimentData[], meta: ExperimentMeta, percents: 
     const values = data.map(u => u.stats.find(s => s[0] >= x || meta.oneShot)).sort((a, b) => (b?.[1] ?? 0) - (a?.[1] ?? 0))
 
     percentiles.forEach(p => {
-      const value = values[Math.floor(values.length * p.percentile / 100)]
+      const value = values[Math.floor((values.length - ignored.length) * p.percentile / 100)]
       if (value == undefined) return
       if (p.stats.length > 1 && p.stats[p.stats.length - 1]?.[1] == value?.[1])
         p.stats.pop()
@@ -386,7 +389,7 @@ function getColor(data: ExperimentData, randomColors: boolean, markedUser: strin
     // unused Color({ r: 99, g: 255, b: 138 }): green2
   }
 
-  if (pood.includes(data.nickname)) {
+  if (ignored.includes(data.nickname)) {
     base = Color("#423B17").lighten(.4)
     randomColors = false
   }
