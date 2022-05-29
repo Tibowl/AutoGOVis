@@ -156,42 +156,36 @@
     "name": "HuTao CA, Dragon's Bane (SR only)",
     "id": "hutao-ca-dbane-sronly",
     "y": "Charged Attack DMG",
-    "archived": true,
     "oneShot": true
   },
   {
     "name": "HuTao CA, Deathmatch (SR only)",
     "id": "hutao-ca-dm-sronly",
     "y": "Charged Attack DMG",
-    "archived": true,
     "oneShot": true
   },
   {
     "name": "HuTao CA, Staff of Homa (SR only)",
     "id": "hutao-ca-homa-sronly",
     "y": "Charged Attack DMG",
-    "archived": true,
     "oneShot": true
   },
   {
     "name": "HuTao CA, Dragon's Bane (All)",
     "id": "hutao-ca-dbane-all",
     "y": "Charged Attack DMG",
-    "archived": true,
     "oneShot": true
   },
   {
     "name": "HuTao CA, Deathmatch (All)",
     "id": "hutao-ca-dm-all",
     "y": "Charged Attack DMG",
-    "archived": true,
     "oneShot": true
   },
   {
     "name": "HuTao CA, Staff of Homa (All)",
     "id": "hutao-ca-homa-all",
     "y": "Charged Attack DMG",
-    "archived": true,
     "oneShot": true
   },
   {
@@ -199,21 +193,18 @@
     "id": "ganyu-bloom-melt-amos-bow",
     "template": "ganyu-bloom-melt-amos",
     "y": "Frostflake Arrow Bloom DMG (Melt)",
-    "archived": true,
     "oneShot": true
   },
   {
     "name": "Ganyu Bloom Melt, Prototype Crescent",
     "id": "ganyu-bloom-melt-prototype-crescent",
     "y": "Frostflake Arrow Bloom DMG (Melt)",
-    "archived": true,
     "oneShot": true
   },
   {
     "name": "Ganyu Bloom Melt, Skyward Harp",
     "id": "ganyu-bloom-melt-skyward-harp",
     "y": "Frostflake Arrow Bloom DMG (Melt)",
-    "archived": true,
     "oneShot": true
   },
   {
@@ -222,7 +213,6 @@
     "template": "ganyu-ice-shard-amos",
     "y": "Ice Shard DMG",
     "x": "Energy Recharge",
-    "archived": true,
     "oneShot": false
   },
   {
@@ -230,7 +220,6 @@
     "id": "ganyu-ice-shard-prototype-crescent",
     "y": "Ice Shard DMG",
     "x": "Energy Recharge",
-    "archived": true,
     "oneShot": false
   },
   {
@@ -238,7 +227,6 @@
     "id": "ganyu-ice-shard-skyward-harp",
     "y": "Ice Shard DMG",
     "x": "Energy Recharge",
-    "archived": true,
     "oneShot": false
   },
   {

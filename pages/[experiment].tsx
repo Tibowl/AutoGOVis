@@ -1,11 +1,11 @@
 import {
-    BarElement, CategoryScale, Chart as ChartJS, Filler, Legend, LinearScale, LineElement, PointElement, Tooltip
+  BarElement, CategoryScale, Chart as ChartJS, Filler, Legend, LinearScale, LineElement, PointElement, Tooltip
 } from "chart.js"
 import Color from "color"
 import { readFile } from "fs/promises"
 import { GetStaticPathsResult, GetStaticPropsContext, GetStaticPropsResult } from "next"
 import Head from "next/head"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Scatter } from "react-chartjs-2"
 import FormattedLink from "../components/FormattedLink"
 import Main from "../components/Main"

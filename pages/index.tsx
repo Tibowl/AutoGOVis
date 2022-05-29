@@ -26,6 +26,7 @@ export default function MainPage({ location, experiments }: Props & { location: 
     </h1>
 
     <h3 className="text-2xl font-bold pt-1" id="about">Submitting data</h3>
+    <div className="font-bold text-xl text-red-700 dark:text-red-400">Note: The form will close when the 2.7 maintenance starts.</div>
     <p>
       Submit your own data <FormattedLink href="https://forms.gle/Gv8rd5XEjH3GzhE36"
             target="form">here</FormattedLink>.
