@@ -41,7 +41,6 @@ export default function Experiment({ location, meta, data, next, prev, ignored }
     const [showPercentiles, setShowPercentiles] = useState(true)
     const [showBoth, setShowBoth] = useState(false)
     const [markedUser, setMarkedUser] = useState(UNSELECTED)
-    const [minimumX, setMinimumX] = useState(0)
     const [percentiles, setPercentiles] = useState([5, 25, 50, 75, 95])
 
     let shownData = data
@@ -111,9 +110,7 @@ export default function Experiment({ location, meta, data, next, prev, ignored }
         ]} />
         <UserGraph data={shownData} showLines={showLines} meta={meta} randomColors={randomColors} markedUser={markedUser} showSpecialData={showSpecialData} ignored={ignored} />
         <button className="bg-blue-600 disabled:bg-gray-900 text-slate-50 disabled:text-slate-400 w-fit px-3 py-1 text-center rounded-lg mt-2 cursor-pointer float-right" onClick={() => exportCSV(meta, data)}>Export to .csv</button>
-        {!meta.oneShot && <NumberInput label={`Minimum ${meta.x}`} set={setMinimumX} value={minimumX} />}
-        <div className="clear-both"></div>
-        <Leaderboard data={data} markedUser={markedUser} meta={meta} minimumX={minimumX} ignored={ignored} />
+        <Leaderboard data={data} markedUser={markedUser} meta={meta} ignored={ignored} />
 
         <h3 className="text-lg font-bold pt-1" id="disclaimer">Disclaimer</h3>
         <p>This data is gathered from the GUOBA project. Submit your own data <FormattedLink
@@ -191,54 +188,59 @@ function UserGraph({ meta, data, showLines, randomColors, showSpecialData, marke
   </div>
 }
 
-function Leaderboard({ data, meta, markedUser, minimumX, ignored }: {data: ExperimentData[], meta: ExperimentMeta, markedUser: string, minimumX: number, ignored: string[]}) {
+function Leaderboard({ data, meta, markedUser, ignored }: {data: ExperimentData[], meta: ExperimentMeta, markedUser: string, ignored: string[]}) {
   const [expanded, setExpanded] = useState(false)
+  const [minimumX, setMinimumX] = useState(0)
 
-  return <table className={`table-auto w-full ${styles.table} ${expanded || data.length <= 10 ? "" : "cursor-pointer"} my-2 sm:text-base text-sm`} onClick={(e) => setExpanded(true)}>
-  <thead>
-    <tr className="divide-x divide-gray-200 dark:divide-gray-500">
-      <th>#</th>
-      <th>Name</th>
-      <th>Total Adventure XP</th>
-      <th>Affiliation</th>
-      {!meta.oneShot && <th>{meta.x ?? "x"}</th>}
-      <th>{meta.y ?? "y"}</th>
-    </tr>
-  </thead>
-  <tbody className="divide-y divide-gray-200 dark:divide-gray-500">
-    {data
-      .map(c => ({
-        nickname: c.nickname,
-        ar: c.ar,
-        affiliation: c.affiliation,
-        bestStats: c.stats.find(x => meta.oneShot || x[0] >= minimumX)
-      }))
-      .sort((a, b) => {
-        if (ignored.includes(a?.nickname)) return 1
-        if (ignored.includes(b?.nickname)) return -1
+  return <>
+  {!meta.oneShot && <NumberInput label={`Minimum ${meta.x}`} set={setMinimumX} value={minimumX} />}
+  <div className="clear-both"></div>
+  <table className={`table-auto w-full ${styles.table} ${expanded || data.length <= 10 ? "" : "cursor-pointer"} my-2 sm:text-base text-sm`} onClick={(e) => setExpanded(true)}>
+    <thead>
+      <tr className="divide-x divide-gray-200 dark:divide-gray-500">
+        <th>#</th>
+        <th>Name</th>
+        <th>Total Adventure XP</th>
+        <th>Affiliation</th>
+        {!meta.oneShot && <th>{meta.x ?? "x"}</th>}
+        <th>{meta.y ?? "y"}</th>
+      </tr>
+    </thead>
+    <tbody className="divide-y divide-gray-200 dark:divide-gray-500">
+      {data
+        .map(c => ({
+          nickname: c.nickname,
+          ar: c.ar,
+          affiliation: c.affiliation,
+          bestStats: c.stats.find(x => meta.oneShot || x[0] >= minimumX)
+        }))
+        .sort((a, b) => {
+          if (ignored.includes(a?.nickname)) return 1
+          if (ignored.includes(b?.nickname)) return -1
 
-        const statA = a?.bestStats?.[1]
-        if (statA == undefined) return 1
+          const statA = a?.bestStats?.[1]
+          if (statA == undefined) return 1
 
-        const statB = b?.bestStats?.[1]
-        if (statB == undefined) return -1
+          const statB = b?.bestStats?.[1]
+          if (statB == undefined) return -1
 
-        return statB - statA
-      })
-      .filter((_, i, arr) => expanded ? true : (i < 10))
-      .map((c, i) => <tr className={`pr-1 divide-x divide-gray-200 dark:divide-gray-500 ${markedUser == c.nickname ? "font-bold" : ""} ${ignored.includes(c.nickname) ? "opacity-90 text-yellow-800" : ""}`} key={i}>
-        <td>{ignored.includes(c.nickname) ? "Last" : `#${i+1}`}</td>
-        <td>{c.nickname}</td>
-        <td>{c.ar.toLocaleString()}</td>
-        <td>{c.affiliation}</td>
-        {!meta.oneShot && <td>{c.bestStats?.[0]?.toLocaleString() ?? "---"}</td>}
-        <td>{c.bestStats?.[1]?.toLocaleString() ?? "---"}</td>
-      </tr>)}
-      {!expanded && data.length > 10 && <tr className="pr-1 cursor-pointer text-blue-700 dark:text-blue-300 hover:text-blue-400 dark:hover:text-blue-400 no-underline transition-all duration-200 font-semibold">
-          <td colSpan={meta.oneShot ? 5 : 6} style={({ textAlign: "center" })}>Click to expand...</td>
-        </tr>}
-  </tbody>
-</table>
+          return statB - statA
+        })
+        .filter((_, i, arr) => expanded ? true : (i < 10))
+        .map((c, i) => <tr className={`pr-1 divide-x divide-gray-200 dark:divide-gray-500 ${markedUser == c.nickname ? "font-bold" : ""} ${ignored.includes(c.nickname) ? "opacity-90 text-yellow-800" : ""}`} key={i}>
+          <td>{ignored.includes(c.nickname) ? "Last" : `#${i+1}`}</td>
+          <td>{c.nickname}</td>
+          <td>{c.ar.toLocaleString()}</td>
+          <td>{c.affiliation}</td>
+          {!meta.oneShot && <td>{c.bestStats?.[0]?.toLocaleString() ?? "---"}</td>}
+          <td>{c.bestStats?.[1]?.toLocaleString() ?? "---"}</td>
+        </tr>)}
+        {!expanded && data.length > 10 && <tr className="pr-1 cursor-pointer text-blue-700 dark:text-blue-300 hover:text-blue-400 dark:hover:text-blue-400 no-underline transition-all duration-200 font-semibold">
+            <td colSpan={meta.oneShot ? 5 : 6} style={({ textAlign: "center" })}>Click to expand...</td>
+          </tr>}
+    </tbody>
+  </table>
+</>
 }
 
 function CheckboxInput({ value, set, label }: { value: boolean, set: (newValue: boolean) => unknown, label: string }) {
