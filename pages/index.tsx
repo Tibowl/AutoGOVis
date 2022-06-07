@@ -25,8 +25,9 @@ export default function MainPage({ location, experiments }: Props & { location: 
       The GUOBA Project
     </h1>
 
+    {/*
     <h3 className="text-2xl font-bold pt-1" id="about">Submitting data</h3>
-    <div className="font-bold text-xl text-red-700 dark:text-red-400">Note: The form will close when the 2.7 maintenance starts.</div>
+    <div className="font-bold text-xl text-red-700 dark:text-red-400">Note: The form is currently closed.</div>
     <p>
       Submit your own data <FormattedLink href="https://forms.gle/Gv8rd5XEjH3GzhE36"
             target="form">here</FormattedLink>.
@@ -39,6 +40,7 @@ export default function MainPage({ location, experiments }: Props & { location: 
       Next, a GOOD export can be taken via the <FormattedLink href="https://frzyc.github.io/genshin-optimizer/#/setting"
       target="go-setting">Settings</FormattedLink> page under <i>Database Download</i>.
     </p>
+    */}
 
     <h3 className="text-2xl font-bold pt-1" id="about">About &lsquo;The GUOBA Project&rsquo;</h3>
     <p>This is a project to map out how the artifacts of players perform to improve mathematical models/artifact standards for calculations.
