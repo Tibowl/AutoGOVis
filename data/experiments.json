@@ -23,7 +23,7 @@
   },
   {
     "name": "Venti Burst DoT, The Stringless",
-    "id": "venti-14-ticks",
+    "id": "venti-burst-tick",
     "y": "Wind's Grand Ode: DoT",
     "x": "Energy Recharge",
     "oneShot": false
